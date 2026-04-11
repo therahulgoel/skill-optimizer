@@ -2,7 +2,7 @@
 
 Trim and minimize `SKILL.md` and `AGENTS.md` files — reduce token costs and simplify agent skills.
 
-![Dashboard preview](docs/images/dashboard-screenshot.svg)
+![Dashboard preview](docs/images/dashboard-screenshot.png)
 
 Why use Skill Optimizer?
 - Save tokens: smaller skills reduce prompt size and model cost.
