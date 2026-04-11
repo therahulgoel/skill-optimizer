@@ -1,0 +1,94 @@
+# Verifiers for Copilot Skills AGENTS.md ablation testing
+
+default_verifier:
+  type: "regex"
+  mode: "any"
+  patterns:
+    - "."
+
+verifiers:
+  # Task 1: Workspace Instructions
+  task_01_workspace_instructions:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "---"                          # YAML frontmatter markers
+      - "description"                  # Must have description field
+      - "\\.github/"                   # Correct directory placement
+      - "applyTo|apply_to"            # Scoping pattern
+    description: "Must have YAML frontmatter with description in .github/ directory"
+
+  # Task 2: SKILL.md creation
+  task_02_skill_creation:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "---"                          # YAML frontmatter
+      - "name:\\s*\\w"                 # name field
+      - "description:\\s*[\"']"        # quoted description (YAML safety)
+      - "Step|step|##"                # Multi-step workflow
+    description: "Must have frontmatter with name, quoted description, and workflow steps"
+
+  # Task 3: Custom Agent
+  task_03_custom_agent:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "tools|tool"                   # Tool restrictions
+      - "instructions|purpose|Instructions"  # Purpose definition
+      - "read_file|grep_search|semantic_search"  # Restricted tool list
+      - "agent|Agent"                  # Agent definition
+    description: "Must define agent with tool restrictions and instructions"
+
+  # Task 4: File Instructions
+  task_04_file_instructions:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "applyTo"                      # Must have applyTo
+      - "\\*\\*/\\*\\.\\{?[a-z]"      # Glob pattern for specific files
+      - "description.*[Uu]se when"     # Trigger phrase pattern
+    description: "Must have applyTo glob and description with trigger phrases"
+
+  # Task 5: Prompt creation
+  task_05_prompt_creation:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "\\{\\{\\w+\\}\\}"            # Mustache variables
+      - "description"                  # Description field
+      - "endpoint|Endpoint|resource|method"  # API-focused content
+    description: "Must have mustache variables and description"
+
+  # Task 6: Hooks
+  task_06_hooks:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "PreToolUse|PostToolUse"       # Lifecycle event
+      - "command|script"               # Shell command
+      - "blocking|block"              # Blocking behavior
+      - "rm -rf|dangerous|BLOCKED"    # Security enforcement
+    description: "Must use lifecycle events with shell command enforcement"
+
+  # Task 7: Foundry deployment
+  task_07_foundry_deploy:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "projectEndpoint|project_endpoint"
+      - "agentName|agent_name"
+      - "testCases|test_cases|evaluator"
+      - "environments|environment"
+    description: "Must have environment config with endpoints and test cases"
+
+  # Task 8: App Store Screenshots
+  task_08_screenshots:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "THEMES|theme|Theme"
+      - "LOCALES|locale|Locale"
+      - "phone|mockup|Phone"
+      - "headline|HEADLINE|screenshots"
+    description: "Must have theme presets, locale support, and phone mockup"

@@ -1,0 +1,86 @@
+# ContextSurgeon Verifier Configuration
+# Define how to validate each task's output
+
+# Default verifier for all tasks (if no specific verifier defined)
+default_verifier:
+  type: "regex"
+  mode: "any"  # 'any' = match if ANY pattern matches, 'all' = match all
+  patterns:
+    - "."   # At least 1 character
+
+verifiers:
+  # Task 1: Zod Validation
+  task_01_validation:
+    type: "regex"
+    mode: "any"
+    patterns:
+      - "z\\.object"
+      - "z\\.string"
+      - "zod"
+    description: "Must contain Zod schema validation"
+
+  # Task 2: Testing (vitest/jest)
+  task_02_testing:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "describe\\s*\\("
+      - "it\\s*\\("
+      - "expect\\s*\\("
+    description: "Must have describe, it, and expect blocks"
+
+  # Task 3: Architecture Pattern
+  task_03_architecture:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "UserService"
+      - "validateRequest"
+      - "service\\.create|service\\.save"
+    description: "Must follow service layer pattern"
+
+  # Task 4: Error Handling
+  task_04_error_handling:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "try|catch|Error"
+      - "status|error"
+      - "500|400"
+    description: "Must have error handling with proper status codes"
+
+  # Task 5: TypeScript Types
+  task_05_typescript:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "interface|type"
+      - ":\\s*[A-Z].*[{\\[]"  # Type annotation
+    description: "Must have TypeScript interfaces and type annotations"
+
+  # Task 6: Code Style
+  task_06_code_style:
+    type: "regex"
+    mode: "any"
+    patterns:
+      - "const.*=.*\\(.*\\)|const.*=.*=>|const.*="
+      - "arrow|const"
+    description: "Must use const and modern JavaScript"
+
+  # Task 7: Environment Variables
+  task_07_deployment:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "process\\.env"
+      - "require|import"
+    description: "Must use environment variables for config"
+
+  # Task 8: Security & Rate Limiting
+  task_08_security:
+    type: "regex"
+    mode: "all"
+    patterns:
+      - "rate|limit|Map"
+      - "Error|throw|reject"
+    description: "Must implement rate limiting or security check"

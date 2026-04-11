@@ -1,0 +1,87 @@
+# ContextSurgeon — Sample Report Output
+# This is what the dashboard reads from
+
+{
+  "summary": {
+    "total_rules": 23,
+    "baseline_pass_rate": 89.5,
+    "baseline_tokens": 2847,
+    "critical_count": 4,
+    "helpful_count": 6,
+    "prune_count": 8,
+    "harmful_count": 2,
+    "neutral_count": 3
+  },
+  "rules": [
+    {
+      "rule_id": "rule_001",
+      "rule_text": "Use Zod for all input validation at API boundaries",
+      "section": "Validation",
+      "original_tokens": 8,
+      "baseline_pass_rate": 89.5,
+      "baseline_tokens": 2847,
+      "ablated_pass_rate": 71.3,
+      "ablated_tokens": 2839,
+      "pass_delta": -18.2,
+      "token_delta": -8,
+      "verdict": "CRITICAL",
+      "roi": 54.6
+    },
+    {
+      "rule_id": "rule_007",
+      "rule_text": "Write unit tests for every exported function",
+      "section": "Testing",
+      "original_tokens": 10,
+      "baseline_pass_rate": 89.5,
+      "baseline_tokens": 2847,
+      "ablated_pass_rate": 77.6,
+      "ablated_tokens": 2837,
+      "pass_delta": -12.0,
+      "token_delta": -10,
+      "verdict": "CRITICAL",
+      "roi": 36.0
+    },
+    {
+      "rule_id": "rule_009",
+      "rule_text": "Never call database directly from API handlers",
+      "section": "Architecture",
+      "original_tokens": 9,
+      "baseline_pass_rate": 89.5,
+      "baseline_tokens": 2847,
+      "ablated_pass_rate": 81.7,
+      "ablated_tokens": 2838,
+      "pass_delta": -8.0,
+      "token_delta": -9,
+      "verdict": "HELPFUL",
+      "roi": 24.0
+    },
+    {
+      "rule_id": "rule_019",
+      "rule_text": "Use 2-space indentation everywhere",
+      "section": "Code Style",
+      "original_tokens": 5,
+      "baseline_pass_rate": 89.5,
+      "baseline_tokens": 2847,
+      "ablated_pass_rate": 89.6,
+      "ablated_tokens": 2816,
+      "pass_delta": 0.1,
+      "token_delta": -31,
+      "verdict": "PRUNE",
+      "roi": -31.1
+    },
+    {
+      "rule_id": "rule_020",
+      "rule_text": "Add JSDoc comments to every function",
+      "section": "Code Style",
+      "original_tokens": 8,
+      "baseline_pass_rate": 89.5,
+      "baseline_tokens": 2847,
+      "ablated_pass_rate": 92.8,
+      "ablated_tokens": 2753,
+      "pass_delta": 3.3,
+      "token_delta": -94,
+      "verdict": "HARMFUL",
+      "roi": -85.1
+    }
+  ]
+}
