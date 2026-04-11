@@ -1,19 +1,21 @@
 {
   "type": "skill_trim_report",
   "metadata": {
-    "timestamp": "2026-04-11T06:05:05.170182Z",
-    "source_path": "external/swiftui-agent-skill/swiftui-pro/SKILL.md",
-    "optimized_skill_path": "results/swiftui-pro.optimized.md"
+    "timestamp": "2026-04-11T08:00:37.750515Z",
+    "source_path": "/Users/rahulgoel/.claude/skills/app-store-screenshots/SKILL.md",
+    "optimized_skill_path": "/tmp/skill-optimizer-run/results/claude-aso-local/app-store-screenshots.optimized.md",
+    "mode": "balanced",
+    "replacement_path": null
   },
   "skill": {
-    "name": "swiftui-pro",
-    "original_rule_count": 30,
-    "kept_rule_count": 17,
-    "removed_rule_count": 13,
-    "original_tokens": 152,
-    "optimized_tokens": 82,
-    "actual_tokens_saved": 70,
-    "token_reduction_pct": 46.1
+    "name": "app-store-screenshots",
+    "original_rule_count": 84,
+    "kept_rule_count": 26,
+    "removed_rule_count": 58,
+    "original_tokens": 491,
+    "optimized_tokens": 176,
+    "actual_tokens_saved": 315,
+    "token_reduction_pct": 64.2
   },
   "basis": [
     {
@@ -35,222 +37,604 @@
     {
       "name": "Remove examples and editorial text",
       "description": "Drop sample findings, before/after demonstrations, and narrative text because they add context size but not operational value."
+    },
+    {
+      "name": "Mode: Balanced",
+      "description": "Balanced mode removes duplication while preserving practical team guidance."
     }
   ],
   "kept_rules": [
     {
-      "id": "rule_010",
-      "text": "iOS 26 exists, and is the default deployment target for new apps.",
-      "section": "Core Instructions",
-      "tokens": 6,
-      "reason": "Platform or framework constraint retained because it changes implementation decisions."
+      "id": "rule_003",
+      "text": "**Brand colors** \u2014 \"What are your brand colors? (accent color, text color, background preference)\"",
+      "section": "# Required",
+      "tokens": 7,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
-      "id": "rule_011",
-      "text": "Target Swift 6.2 or later, using modern Swift concurrency.",
-      "section": "Core Instructions",
-      "tokens": 4,
-      "reason": "Platform or framework constraint retained because it changes implementation decisions."
+      "id": "rule_004",
+      "text": "**Font** \u2014 \"What font does your app use? (or what font do you want for the screenshots?)\"",
+      "section": "# Required",
+      "tokens": 8,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
       "id": "rule_012",
-      "text": "As a SwiftUI developer, the user will want to avoid UIKit unless requested.",
-      "section": "Core Instructions",
-      "tokens": 6,
-      "reason": "Platform or framework constraint retained because it changes implementation decisions."
-    },
-    {
-      "id": "rule_013",
-      "text": "Do not introduce third-party frameworks without asking first.",
-      "section": "Core Instructions",
+      "text": "**Additional instructions** \u2014 \"Any specific requirements, constraints, or preferences?\"",
+      "section": "# Optional",
       "tokens": 4,
-      "reason": "Platform or framework constraint retained because it changes implementation decisions."
-    },
-    {
-      "id": "rule_015",
-      "text": "Use a consistent project structure, with folder layout determined by app features.",
-      "section": "Core Instructions",
-      "tokens": 6,
-      "reason": "Platform or framework constraint retained because it changes implementation decisions."
-    },
-    {
-      "id": "rule_016",
-      "text": "State the file and relevant line(s).",
-      "section": "Output Format",
-      "tokens": 3,
-      "reason": "Output-format rule retained because teams need consistent, usable review output."
-    },
-    {
-      "id": "rule_017",
-      "text": "Name the rule being violated (e.g., \"Use `foregroundStyle()` instead of `foregroundColor()`\").",
-      "section": "Output Format",
-      "tokens": 5,
       "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
       "id": "rule_018",
-      "text": "Show a brief before/after code fix.",
-      "section": "Output Format",
-      "tokens": 3,
-      "reason": "Output-format rule retained because teams need consistent, usable review output."
+      "text": "**Theme preset names**: turn vague style requests into reusable theme ids the user can switch between",
+      "section": "# Derived from answers (do NOT ask \u2014 decide yourself)",
+      "tokens": 8,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
-      "id": "rule_022",
-      "text": "`references/accessibility.md` - Dynamic Type, VoiceOver, Reduce Motion, and other accessibility requirements.",
-      "section": "References",
+      "id": "rule_020",
+      "text": "Each slide sells ONE idea. Never two features on one slide.",
+      "section": "# Screenshot Framework (Narrative Arc)",
       "tokens": 5,
-      "reason": "Unique reference file retained for targeted deep review."
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_021",
+      "text": "Vary layouts across slides \u2014 never repeat the same template structure.",
+      "section": "# Screenshot Framework (Narrative Arc)",
+      "tokens": 5,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
       "id": "rule_023",
-      "text": "`references/api.md` - updating code for modern API, and the deprecated code it replaces.",
-      "section": "References",
-      "tokens": 6,
-      "reason": "Unique reference file retained for targeted deep review."
-    },
-    {
-      "id": "rule_024",
-      "text": "`references/design.md` - guidance for building accessible apps that meet Apple\u2019s Human Interface Guidelines.",
-      "section": "References",
-      "tokens": 6,
-      "reason": "Unique reference file retained for targeted deep review."
+      "text": "**One idea per headline.** Never join two things with \"and.\"",
+      "section": "# The Iron Rules",
+      "tokens": 5,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
       "id": "rule_025",
-      "text": "`references/hygiene.md` - making code compile cleanly and be maintainable in the long term.",
-      "section": "References",
-      "tokens": 6,
-      "reason": "Unique reference file retained for targeted deep review."
-    },
-    {
-      "id": "rule_026",
-      "text": "`references/navigation.md` - navigation using `NavigationStack`/`NavigationSplitView`, plus alerts, confirmation dialogs, and sheets.",
-      "section": "References",
-      "tokens": 5,
-      "reason": "Unique reference file retained for targeted deep review."
-    },
-    {
-      "id": "rule_027",
-      "text": "`references/performance.md` - optimizing SwiftUI code for maximum performance.",
-      "section": "References",
-      "tokens": 4,
-      "reason": "Unique reference file retained for targeted deep review."
+      "text": "**3-5 words per line.** Must be readable at thumbnail size in the App Store.",
+      "section": "# The Iron Rules",
+      "tokens": 7,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
       "id": "rule_028",
-      "text": "`references/data.md` - data flow, shared state, and property wrappers.",
-      "section": "References",
-      "tokens": 4,
-      "reason": "Unique reference file retained for targeted deep review."
+      "text": "**Two ideas joined by \"and\"**: \"Track X and never miss Y\"",
+      "section": "# What NEVER Works",
+      "tokens": 5,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
       "id": "rule_029",
-      "text": "`references/swift.md` - tips on writing modern Swift code, including using Swift Concurrency effectively.",
-      "section": "References",
-      "tokens": 6,
-      "reason": "Unique reference file retained for targeted deep review."
+      "text": "**Compound clauses**: \"Save and customize X for every Y you own\"",
+      "section": "# What NEVER Works",
+      "tokens": 5,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     },
     {
-      "id": "rule_030",
-      "text": "`references/views.md` - view structure, composition, and animation.",
-      "section": "References",
-      "tokens": 3,
-      "reason": "Unique reference file retained for targeted deep review."
+      "id": "rule_035",
+      "text": "Present options to the user with reasoning for each",
+      "section": "# Copy Process",
+      "tokens": 4,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_040",
+      "text": "Do not literally translate headlines if the result becomes long or awkward.",
+      "section": "# Localization Rules",
+      "tokens": 6,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_041",
+      "text": "Re-write copy for the target market while keeping the same selling idea.",
+      "section": "# Localization Rules",
+      "tokens": 6,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_053",
+      "text": "Use `width: \"65-70%\"` for iPad mockups (vs 82-86% for iPhone) \u2014 iPad is wider relative to its height",
+      "section": "# iPad Mockup Component (CSS-Only)",
+      "tokens": 9,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_055",
+      "text": "Caption font sizes should scale from `canvasW` (which is 2064 for iPad vs 1320 for iPhone)",
+      "section": "# iPad Mockup Component (CSS-Only)",
+      "tokens": 8,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_056",
+      "text": "Same slide designs/copy can be reused \u2014 just swap the Phone component for IPad and adjust positioning",
+      "section": "# iPad Mockup Component (CSS-Only)",
+      "tokens": 8,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_060",
+      "text": "export full matrix when the user explicitly asks for it",
+      "section": "# Export Matrix",
+      "tokens": 5,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_063",
+      "text": "**Offscreen container**: Use `position: absolute; left: -9999px` (not `fixed`).",
+      "section": "# Key Rules",
+      "tokens": 4,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_064",
+      "text": "**Resizing**: Load data URL into Image, draw onto canvas at target size.",
+      "section": "# Key Rules",
+      "tokens": 6,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_067",
+      "text": "**Numbered filenames**: Prefix exports with zero-padded index so they sort correctly: `01-hero-1320x2868.png`, `02-freshness-1320x2868.png`, etc. Use `String(index + 1).padStart(2, \"0\")`.",
+      "section": "# Key Rules",
+      "tokens": 9,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_068",
+      "text": "**Pre-loaded data URIs**: Always use the `img()` helper with pre-loaded base64 data URIs for all `<img>` sources. Never use raw file paths in slide components \u2014 `html-to-image` will fail to capture them non-deterministically.",
+      "section": "# Key Rules",
+      "tokens": 16,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_069",
+      "text": "**RGB source images**: Ensure all source screenshots in `public/screenshots/` are RGB (not RGBA). RGBA PNGs can fail during SVG serialization and produce transparent/black regions in exports.",
+      "section": "# Key Rules",
+      "tokens": 13,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_071",
+      "text": "**First slide is strongest**: the hero slide should communicate the main benefit immediately",
+      "section": "# Message Quality",
+      "tokens": 6,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_073",
+      "text": "**No repeated layouts in sequence**: adjacent slides should not feel templated",
+      "section": "# Visual Quality",
+      "tokens": 5,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_074",
+      "text": "**Decorative elements support the story**: they should add energy without covering the app UI",
+      "section": "# Visual Quality",
+      "tokens": 7,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
+    },
+    {
+      "id": "rule_083",
+      "text": "mention any slides that intentionally use contrast or different layout treatment",
+      "section": "# Hand-off Behavior",
+      "tokens": 5,
+      "reason": "Actionable directive retained because it changes what the reviewer should check."
     }
   ],
   "removed_rules": [
     {
       "id": "rule_001",
-      "text": "Check for deprecated API using `references/api.md`.",
-      "section": "General",
-      "tokens": 3,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
+      "text": "**App screenshots** \u2014 \"Where are your app screenshots? (PNG files of actual device captures)\"",
+      "section": "# Required",
+      "tokens": 7,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_002",
-      "text": "Check that views, modifiers, and animations have been written optimally using `references/views.md`.",
-      "section": "General",
-      "tokens": 6,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
-    },
-    {
-      "id": "rule_003",
-      "text": "Validate that data flow is configured correctly using `references/data.md`.",
-      "section": "General",
+      "text": "**App icon** \u2014 \"Where is your app icon PNG?\"",
+      "section": "# Required",
       "tokens": 4,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
-    },
-    {
-      "id": "rule_004",
-      "text": "Ensure navigation is updated and performant using `references/navigation.md`.",
-      "section": "General",
-      "tokens": 4,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_005",
-      "text": "Ensure the code uses designs that are accessible and compliant with Apple\u2019s Human Interface Guidelines using `references/design.md`.",
-      "section": "General",
+      "text": "**Feature list** \u2014 \"List your app's features in priority order. What's the #1 thing your app does?\"",
+      "section": "# Required",
       "tokens": 8,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_006",
-      "text": "Validate accessibility compliance including Dynamic Type, VoiceOver, and Reduce Motion using `references/accessibility.md`.",
-      "section": "General",
-      "tokens": 6,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
+      "text": "**Number of slides** \u2014 \"How many screenshots do you want? (Apple allows up to 10)\"",
+      "section": "# Required",
+      "tokens": 7,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_007",
-      "text": "Ensure the code is able to run efficiently using `references/performance.md`.",
-      "section": "General",
-      "tokens": 5,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
+      "text": "**Style direction** \u2014 \"What style do you want? Examples: warm/organic, dark/moody, clean/minimal, bold/colorful, gradient-heavy, flat. Share App Store screenshot references if you have any.\"",
+      "section": "# Required",
+      "tokens": 12,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_008",
-      "text": "Quick validation of Swift code using `references/swift.md`.",
-      "section": "General",
-      "tokens": 3,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
+      "text": "**iPad screenshots** \u2014 \"Do you also have iPad screenshots? If so, we'll generate iPad App Store screenshots too (recommended for universal apps).\"",
+      "section": "# Optional",
+      "tokens": 11,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_009",
-      "text": "Final code hygiene check using `references/hygiene.md`.",
-      "section": "General",
-      "tokens": 3,
-      "reason": "Review-process step removed because the same source is already covered by the compact references list."
+      "text": "**Component assets** \u2014 \"Do you have any UI element PNGs (cards, widgets, etc.) you want as floating decorations? If not, that's fine \u2014 we'll skip them.\"",
+      "section": "# Optional",
+      "tokens": 13,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_010",
+      "text": "**Localized screenshots** \u2014 \"Do you want screenshots in multiple languages? This helps your listing rank in regional App Stores even if your app is English-only. If yes: which languages? (e.g. en, de, es, pt, ja, ar, he)\"",
+      "section": "# Optional",
+      "tokens": 18,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_011",
+      "text": "**Theme preset system** \u2014 \"Do you want one art direction, or reusable visual themes (for example: clean-light, dark-bold, warm-editorial) so you can swap screenshot looks quickly?\"",
+      "section": "# Optional",
+      "tokens": 13,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_013",
+      "text": "**Background style**: gradient direction, colors, whether light or dark base",
+      "section": "# Derived from answers (do NOT ask \u2014 decide yourself)",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_014",
-      "text": "Break different types up into different Swift files rather than placing multiple structs, classes, or enums into a single file.",
-      "section": "Core Instructions",
-      "tokens": 10,
+      "text": "**Decorative elements**: blobs, glows, geometric shapes, or none \u2014 match the style",
+      "section": "# Derived from answers (do NOT ask \u2014 decide yourself)",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_015",
+      "text": "**Dark vs light slides**: how many of each, which features suit dark treatment",
+      "section": "# Derived from answers (do NOT ask \u2014 decide yourself)",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_016",
+      "text": "**Typography treatment**: weight, tracking, line height \u2014 match the brand personality",
+      "section": "# Derived from answers (do NOT ask \u2014 decide yourself)",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_017",
+      "text": "**Color palette**: derive text colors, secondary colors, shadow tints from the brand colors",
+      "section": "# Derived from answers (do NOT ask \u2014 decide yourself)",
+      "tokens": 6,
       "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
       "id": "rule_019",
-      "text": "**Accessibility (high):** The add button on line 24 is invisible to VoiceOver.",
-      "section": "# Summary",
-      "tokens": 6,
-      "reason": "Example or sample output removed to reduce context size."
+      "text": "**RTL behavior**: if any locale is RTL (`ar`, `he`, `fa`, `ur`), mirror layout intentionally instead of just translating the text",
+      "section": "# Derived from answers (do NOT ask \u2014 decide yourself)",
+      "tokens": 10,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
-      "id": "rule_020",
-      "text": "**Deprecated API (medium):** `foregroundColor()` on line 12 should be `foregroundStyle()`.",
-      "section": "# Summary",
+      "id": "rule_022",
+      "text": "Include 1-2 contrast slides (inverted bg) for visual rhythm.",
+      "section": "# Screenshot Framework (Narrative Arc)",
+      "tokens": 4,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_024",
+      "text": "**Short, common words.** 1-2 syllables. No jargon unless it's domain-specific.",
+      "section": "# The Iron Rules",
       "tokens": 5,
-      "reason": "Example or sample output removed to reduce context size."
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     },
     {
-      "id": "rule_021",
-      "text": "**Data flow (medium):** The manual binding on line 31 is fragile and harder to maintain.",
-      "section": "# Summary",
+      "id": "rule_026",
+      "text": "**Line breaks are intentional.** Control where lines break with `<br />`.",
+      "section": "# The Iron Rules",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_027",
+      "text": "**Feature lists as headlines**: \"Log every item with tags, categories, and notes\"",
+      "section": "# What NEVER Works",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_030",
+      "text": "**Vague aspirational**: \"Every item, tracked\"",
+      "section": "# What NEVER Works",
+      "tokens": 2,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_031",
+      "text": "**Marketing buzzwords**: \"AI-powered tips\" (unless it's actually AI)",
+      "section": "# What NEVER Works",
+      "tokens": 4,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_032",
+      "text": "Write 3 options per slide using the three approaches",
+      "section": "# Copy Process",
+      "tokens": 4,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_033",
+      "text": "Read each at arm's length \u2014 if you can't parse it in 1 second, it's too complex",
+      "section": "# Copy Process",
+      "tokens": 8,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_034",
+      "text": "Check: does each line have 3-5 words? If not, adjust line breaks",
+      "section": "# Copy Process",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_036",
+      "text": "app category + core outcome",
+      "section": "# Example Prompt Shapes",
+      "tokens": 2,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_037",
+      "text": "top features in priority order",
+      "section": "# Example Prompt Shapes",
+      "tokens": 2,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_038",
+      "text": "desired slide count",
+      "section": "# Example Prompt Shapes",
+      "tokens": 1,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_039",
+      "text": "style direction",
+      "section": "# Example Prompt Shapes",
+      "tokens": 1,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_042",
+      "text": "Re-check line breaks per locale; German, French, and Portuguese often need shorter claims.",
+      "section": "# Localization Rules",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_043",
+      "text": "For RTL languages, also reverse badge alignment, supporting decorations, and phone offsets when the composition depends on left/right weight.",
+      "section": "# Localization Rules",
+      "tokens": 9,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_044",
+      "text": "**Raycast** \u2014 specific, descriptive, one concrete value per slide",
+      "section": "# Reference Apps for Copy Style",
+      "tokens": 4,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_045",
+      "text": "**Turf** \u2014 ultra-simple action verbs, conversational",
+      "section": "# Reference Apps for Copy Style",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_046",
+      "text": "**Mela / Notion** \u2014 warm, minimal, elegant",
+      "section": "# Reference Apps for Copy Style",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_047",
+      "text": "`locale` switches screenshot folders and copy dictionaries",
+      "section": "Theme + Locale Toggles",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_048",
+      "text": "`theme` switches design tokens only",
+      "section": "Theme + Locale Toggles",
+      "tokens": 2,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_049",
+      "text": "`device` switches iPhone/iPad slide registries",
+      "section": "Theme + Locale Toggles",
+      "tokens": 2,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_050",
+      "text": "`size` switches export resolution only",
+      "section": "Theme + Locale Toggles",
+      "tokens": 2,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_051",
+      "text": "**Preview**: CSS `transform: scale()` via ResizeObserver to fit a grid card",
+      "section": "# Rendering Strategy",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_052",
+      "text": "**Export**: Offscreen at `position: absolute; left: -9999px` at true resolution",
+      "section": "# Rendering Strategy",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_054",
+      "text": "Two-iPad layouts work the same as two-phone layouts but with adjusted widths",
+      "section": "# iPad Mockup Component (CSS-Only)",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_057",
+      "text": "export current slide",
+      "section": "# Export Matrix",
+      "tokens": 1,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_058",
+      "text": "export all slides for current locale/device/theme",
+      "section": "# Export Matrix",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_059",
+      "text": "export all locales for current theme",
+      "section": "# Export Matrix",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_061",
+      "text": "**Double-call trick**: First `toPng()` loads fonts/images lazily. Second produces clean output. Without this, exports are blank.",
+      "section": "# Key Rules",
+      "tokens": 8,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_062",
+      "text": "**On-screen for capture**: Temporarily move to `left: 0` before calling `toPng`.",
+      "section": "# Key Rules",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_065",
+      "text": "300ms delay between sequential exports.",
+      "section": "# Key Rules",
+      "tokens": 2,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_066",
+      "text": "Set `fontFamily` on the offscreen container.",
+      "section": "# Key Rules",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_070",
+      "text": "**One idea per slide**: if a headline sells two ideas, split it or simplify it",
+      "section": "# Message Quality",
       "tokens": 7,
-      "reason": "Example or sample output removed to reduce context size."
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_072",
+      "text": "**Readable in one second**: if you cannot parse it instantly at arm's length, rewrite it",
+      "section": "# Message Quality",
+      "tokens": 7,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_075",
+      "text": "**Visual rhythm exists**: include at least one contrast slide when the set is long enough",
+      "section": "# Visual Quality",
+      "tokens": 7,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_076",
+      "text": "**No clipped text or assets** after scaling to the selected export size",
+      "section": "# Export Quality",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_077",
+      "text": "**Screenshots are correctly aligned** inside the phone or iPad frame",
+      "section": "# Export Quality",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_078",
+      "text": "**Filenames sort correctly** with zero-padded numeric prefixes",
+      "section": "# Export Quality",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_079",
+      "text": "**Theme tokens are applied consistently** across all slides in the same preset",
+      "section": "# Export Quality",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_080",
+      "text": "**Localized copy still fits** after translation, especially on long-word languages",
+      "section": "# Export Quality",
+      "tokens": 5,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_081",
+      "text": "**RTL slides feel designed, not just flipped**",
+      "section": "# Export Quality",
+      "tokens": 3,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_082",
+      "text": "briefly explain the narrative arc across the slides",
+      "section": "# Hand-off Behavior",
+      "tokens": 4,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
+    },
+    {
+      "id": "rule_084",
+      "text": "call out any assumptions you made about brand tone, copy, or missing assets",
+      "section": "# Hand-off Behavior",
+      "tokens": 6,
+      "reason": "Low-signal editorial content removed because it does not materially change behavior."
     }
   ],
-  "original_content": "---\nname: swiftui-pro\ndescription: Comprehensively reviews SwiftUI code for best practices on modern APIs, maintainability, and performance. Use when reading, writing, or reviewing SwiftUI projects.\nlicense: MIT\nmetadata:\n  author: Paul Hudson\n  version: \"1.0\"\n---\n\nReview Swift and SwiftUI code for correctness, modern API usage, and adherence to project conventions. Report only genuine problems - do not nitpick or invent issues.\n\nReview process:\n\n1. Check for deprecated API using `references/api.md`.\n1. Check that views, modifiers, and animations have been written optimally using `references/views.md`.\n1. Validate that data flow is configured correctly using `references/data.md`.\n1. Ensure navigation is updated and performant using `references/navigation.md`.\n1. Ensure the code uses designs that are accessible and compliant with Apple\u2019s Human Interface Guidelines using `references/design.md`.\n1. Validate accessibility compliance including Dynamic Type, VoiceOver, and Reduce Motion using `references/accessibility.md`.\n1. Ensure the code is able to run efficiently using `references/performance.md`.\n1. Quick validation of Swift code using `references/swift.md`.\n1. Final code hygiene check using `references/hygiene.md`.\n\nIf doing a partial review, load only the relevant reference files.\n\n\n## Core Instructions\n\n- iOS 26 exists, and is the default deployment target for new apps.\n- Target Swift 6.2 or later, using modern Swift concurrency.\n- As a SwiftUI developer, the user will want to avoid UIKit unless requested.\n- Do not introduce third-party frameworks without asking first.\n- Break different types up into different Swift files rather than placing multiple structs, classes, or enums into a single file.\n- Use a consistent project structure, with folder layout determined by app features.\n\n\n## Output Format\n\nOrganize findings by file. For each issue:\n\n1. State the file and relevant line(s).\n2. Name the rule being violated (e.g., \"Use `foregroundStyle()` instead of `foregroundColor()`\").\n3. Show a brief before/after code fix.\n\nSkip files with no issues. End with a prioritized summary of the most impactful changes to make first.\n\nExample output:\n\n### ContentView.swift\n\n**Line 12: Use `foregroundStyle()` instead of `foregroundColor()`.**\n\n```swift\n// Before\nText(\"Hello\").foregroundColor(.red)\n\n// After\nText(\"Hello\").foregroundStyle(.red)\n```\n\n**Line 24: Icon-only button is bad for VoiceOver - add a text label.**\n\n```swift\n// Before\nButton(action: addUser) {\n    Image(systemName: \"plus\")\n}\n\n// After\nButton(\"Add User\", systemImage: \"plus\", action: addUser)\n```\n\n**Line 31: Avoid `Binding(get:set:)` in view body - use `@State` with `onChange()` instead.**\n\n```swift\n// Before\nTextField(\"Username\", text: Binding(\n    get: { model.username },\n    set: { model.username = $0; model.save() }\n))\n\n// After\nTextField(\"Username\", text: $model.username)\n    .onChange(of: model.username) {\n        model.save()\n    }\n```\n\n### Summary\n\n1. **Accessibility (high):** The add button on line 24 is invisible to VoiceOver.\n2. **Deprecated API (medium):** `foregroundColor()` on line 12 should be `foregroundStyle()`.\n3. **Data flow (medium):** The manual binding on line 31 is fragile and harder to maintain.\n\nEnd of example.\n\n\n## References\n\n- `references/accessibility.md` - Dynamic Type, VoiceOver, Reduce Motion, and other accessibility requirements.\n- `references/api.md` - updating code for modern API, and the deprecated code it replaces.\n- `references/design.md` - guidance for building accessible apps that meet Apple\u2019s Human Interface Guidelines.\n- `references/hygiene.md` - making code compile cleanly and be maintainable in the long term.\n- `references/navigation.md` - navigation using `NavigationStack`/`NavigationSplitView`, plus alerts, confirmation dialogs, and sheets.\n- `references/performance.md` - optimizing SwiftUI code for maximum performance.\n- `references/data.md` - data flow, shared state, and property wrappers.\n- `references/swift.md` - tips on writing modern Swift code, including using Swift Concurrency effectively.\n- `references/views.md` - view structure, composition, and animation.\n",
-  "optimized_content": "---\nname: swiftui-pro\ndescription: Comprehensively reviews SwiftUI code for best practices on modern APIs, maintainability, and performance. Use when reading, writing, or reviewing SwiftUI projects.\nlicense: MIT\nmetadata:\n  author: Paul Hudson\n  version: \"1.0\"\n---\n\nReview Swift and SwiftUI code for correctness, modern APIs, data flow, accessibility, and performance.\n\n## Core Instructions\n\n- iOS 26 exists, and is the default deployment target for new apps.\n- Target Swift 6.2 or later, using modern Swift concurrency.\n- As a SwiftUI developer, the user will want to avoid UIKit unless requested.\n- Do not introduce third-party frameworks without asking first.\n- Use a consistent project structure, with folder layout determined by app features.\n- State the file and relevant line(s).\n- Name the rule being violated (e.g., \"Use `foregroundStyle()` instead of `foregroundColor()`\").\n- Show a brief before/after code fix.\n\n## References\n\n- `references/accessibility.md` - Dynamic Type, VoiceOver, Reduce Motion, and other accessibility requirements.\n- `references/api.md` - updating code for modern API, and the deprecated code it replaces.\n- `references/design.md` - guidance for building accessible apps that meet Apple\u2019s Human Interface Guidelines.\n- `references/hygiene.md` - making code compile cleanly and be maintainable in the long term.\n- `references/navigation.md` - navigation using `NavigationStack`/`NavigationSplitView`, plus alerts, confirmation dialogs, and sheets.\n- `references/performance.md` - optimizing SwiftUI code for maximum performance.\n- `references/data.md` - data flow, shared state, and property wrappers.\n- `references/swift.md` - tips on writing modern Swift code, including using Swift Concurrency effectively.\n- `references/views.md` - view structure, composition, and animation.\n"
+  "original_content": "---\nname: app-store-screenshots\ndescription: Use when building App Store screenshot pages, generating exportable marketing screenshots for iOS apps, or creating programmatic screenshot generators with Next.js. Triggers on app store, screenshots, marketing assets, html-to-image, phone mockup.\n---\n\n# App Store Screenshots Generator\n\n## Overview\n\nBuild a Next.js page that renders iOS App Store screenshots as **advertisements** (not UI showcases) and exports them via `html-to-image` at Apple's required resolutions. Screenshots are the single most important conversion asset on the App Store.\n\n## Core Principle\n\n**Screenshots are advertisements, not documentation.** Every screenshot sells one idea. If you're showing UI, you're doing it wrong \u2014 you're selling a *feeling*, an *outcome*, or killing a *pain point*.\n\n## Step 1: Ask the User These Questions\n\nBefore writing ANY code, ask the user all of these. Do not proceed until you have answers:\n\n### Required\n\n1. **App screenshots** \u2014 \"Where are your app screenshots? (PNG files of actual device captures)\"\n2. **App icon** \u2014 \"Where is your app icon PNG?\"\n3. **Brand colors** \u2014 \"What are your brand colors? (accent color, text color, background preference)\"\n4. **Font** \u2014 \"What font does your app use? (or what font do you want for the screenshots?)\"\n5. **Feature list** \u2014 \"List your app's features in priority order. What's the #1 thing your app does?\"\n6. **Number of slides** \u2014 \"How many screenshots do you want? (Apple allows up to 10)\"\n7. **Style direction** \u2014 \"What style do you want? Examples: warm/organic, dark/moody, clean/minimal, bold/colorful, gradient-heavy, flat. Share App Store screenshot references if you have any.\"\n\n### Optional\n\n8. **iPad screenshots** \u2014 \"Do you also have iPad screenshots? If so, we'll generate iPad App Store screenshots too (recommended for universal apps).\"\n9. **Component assets** \u2014 \"Do you have any UI element PNGs (cards, widgets, etc.) you want as floating decorations? If not, that's fine \u2014 we'll skip them.\"\n10. **Localized screenshots** \u2014 \"Do you want screenshots in multiple languages? This helps your listing rank in regional App Stores even if your app is English-only. If yes: which languages? (e.g. en, de, es, pt, ja, ar, he)\"\n11. **Theme preset system** \u2014 \"Do you want one art direction, or reusable visual themes (for example: clean-light, dark-bold, warm-editorial) so you can swap screenshot looks quickly?\"\n12. **Additional instructions** \u2014 \"Any specific requirements, constraints, or preferences?\"\n\n### Derived from answers (do NOT ask \u2014 decide yourself)\n\nBased on the user's style direction, brand colors, and app aesthetic, decide:\n- **Background style**: gradient direction, colors, whether light or dark base\n- **Decorative elements**: blobs, glows, geometric shapes, or none \u2014 match the style\n- **Dark vs light slides**: how many of each, which features suit dark treatment\n- **Typography treatment**: weight, tracking, line height \u2014 match the brand personality\n- **Color palette**: derive text colors, secondary colors, shadow tints from the brand colors\n- **Theme preset names**: turn vague style requests into reusable theme ids the user can switch between\n- **RTL behavior**: if any locale is RTL (`ar`, `he`, `fa`, `ur`), mirror layout intentionally instead of just translating the text\n\n**IMPORTANT:** If the user gives additional instructions at any point during the process, follow them. User instructions always override skill defaults.\n\n## Step 2: Set Up the Project\n\n### Detect Package Manager\n\nCheck what's available, use this priority: **bun > pnpm > yarn > npm**\n\n```bash\n# Check in order\nwhich bun && echo \"use bun\" || which pnpm && echo \"use pnpm\" || which yarn && echo \"use yarn\" || echo \"use npm\"\n```\n\n### Scaffold (if no existing Next.js project)\n\n```bash\n# With bun:\nbunx create-next-app@latest . --typescript --tailwind --app --src-dir --no-eslint --import-alias \"@/*\"\nbun add html-to-image\n\n# With pnpm:\npnpx create-next-app@latest . --typescript --tailwind --app --src-dir --no-eslint --import-alias \"@/*\"\npnpm add html-to-image\n\n# With yarn:\nyarn create next-app . --typescript --tailwind --app --src-dir --no-eslint --import-alias \"@/*\"\nyarn add html-to-image\n\n# With npm:\nnpx create-next-app@latest . --typescript --tailwind --app --src-dir --no-eslint --import-alias \"@/*\"\nnpm install html-to-image\n```\n\n### Copy the Phone Mockup\n\nThe skill includes a pre-measured iPhone mockup at `mockup.png` (co-located with this SKILL.md). Copy it to the project's `public/` directory. The mockup file is in the same directory as this skill file. No iPad mockup is needed \u2014 the iPad frame is CSS-only.\n\n### File Structure\n\n```\nproject/\n\u251c\u2500\u2500 public/\n\u2502   \u251c\u2500\u2500 mockup.png              # iPhone frame (included with skill)\n\u2502   \u251c\u2500\u2500 app-icon.png            # User's app icon\n\u2502   \u251c\u2500\u2500 screenshots/            # iPhone app screenshots\n\u2502   \u2502   \u251c\u2500\u2500 home.png\n\u2502   \u2502   \u251c\u2500\u2500 feature-1.png\n\u2502   \u2502   \u2514\u2500\u2500 ...\n\u2502   \u2514\u2500\u2500 screenshots-ipad/       # iPad app screenshots (optional)\n\u2502       \u251c\u2500\u2500 home.png\n\u2502       \u251c\u2500\u2500 feature-1.png\n\u2502       \u2514\u2500\u2500 ...\n\u251c\u2500\u2500 src/app/\n\u2502   \u251c\u2500\u2500 layout.tsx              # Font setup\n\u2502   \u2514\u2500\u2500 page.tsx                # The screenshot generator (single file)\n\u2514\u2500\u2500 package.json\n```\n\n**Note:** No iPad mockup PNG is needed \u2014 the iPad frame is rendered with CSS (see iPad Mockup Component below).\n\n**Multi-language:** nest screenshots under a locale folder per language. The generator switches the `base` path; all slide image srcs stay identical.\n\n```\n\u2514\u2500\u2500 screenshots/\n    \u251c\u2500\u2500 en/\n    \u2502   \u251c\u2500\u2500 home.png\n    \u2502   \u251c\u2500\u2500 feature-1.png\n    \u2502   \u2514\u2500\u2500 ...\n    \u251c\u2500\u2500 de/\n    \u2502   \u2514\u2500\u2500 ...\n    \u2514\u2500\u2500 {locale}/\n```\n\nIf iPad screenshots are localized too, mirror the same locale structure:\n\n```\n\u2514\u2500\u2500 screenshots-ipad/\n    \u251c\u2500\u2500 en/\n    \u251c\u2500\u2500 de/\n    \u2514\u2500\u2500 {locale}/\n```\n\n**The entire generator is a single `page.tsx` file.** No routing, no extra layouts, no API routes.\n\n### Multi-language: Locale Tabs\n\nAdd a `LOCALES` array and locale tabs to the toolbar. Every slide src uses `base` \u2014 no hardcoded paths:\n\n```tsx\nconst LOCALES = [\"en\", \"de\", \"es\"] as const; // use whatever langs were defined\ntype Locale = typeof LOCALES[number];\n\n// In ScreenshotsPage:\nconst [locale, setLocale] = useState<Locale>(\"en\");\nconst base = `/screenshots/${locale}`;\n\n// Toolbar tabs:\n{LOCALES.map(l => (\n  <button key={l} onClick={() => setLocale(l)}\n    style={{ fontWeight: locale === l ? 700 : 400 }}>\n    {l.toUpperCase()}\n  </button>\n))}\n\n// In every slide \u2014 unchanged between single and multi-language:\n<Phone src={`${base}/home.png`} alt=\"Home\" />\n```\n\n### Theme Presets + Locale Metadata\n\nAdd a small config layer so the user can switch theme and locale without rewriting slide components:\n\n```tsx\nconst LOCALES = [\"en\", \"de\", \"ar\"] as const;\ntype Locale = typeof LOCALES[number];\n\nconst RTL_LOCALES = new Set<Locale>([\"ar\"]);\n\nconst THEMES = {\n  \"clean-light\": {\n    bg: \"#F6F1EA\",\n    fg: \"#171717\",\n    accent: \"#5B7CFA\",\n    muted: \"#6B7280\",\n  },\n  \"dark-bold\": {\n    bg: \"#0B1020\",\n    fg: \"#F8FAFC\",\n    accent: \"#8B5CF6\",\n    muted: \"#94A3B8\",\n  },\n  \"warm-editorial\": {\n    bg: \"#F7E8DA\",\n    fg: \"#2B1D17\",\n    accent: \"#D97706\",\n    muted: \"#7C5A47\",\n  },\n} as const;\n\ntype ThemeId = keyof typeof THEMES;\n\nconst COPY_BY_LOCALE = {\n  en: { hero: \"Build better habits\" },\n  de: { hero: \"Baue bessere Gewohnheiten auf\" },\n  ar: { hero: \"\u0627\u0628\u0646\u0650 \u0639\u0627\u062f\u0627\u062a \u0623\u0641\u0636\u0644\" },\n} satisfies Record<Locale, { hero: string }>;\n\nconst [themeId, setThemeId] = useState<ThemeId>(\"clean-light\");\nconst [locale, setLocale] = useState<Locale>(\"en\");\n\nconst theme = THEMES[themeId];\nconst copy = COPY_BY_LOCALE[locale];\nconst isRtl = RTL_LOCALES.has(locale);\n```\n\nUse theme tokens everywhere instead of hardcoding colors. For RTL locales, set `dir={isRtl ? \"rtl\" : \"ltr\"}` on the screenshot canvas and mirror asymmetric layouts intentionally.\n\nSupport query params for automation:\n\n```tsx\n// ?locale=de&theme=dark-bold&device=ipad\n```\n\n### Font Setup\n\n```tsx\n// src/app/layout.tsx\nimport { YourFont } from \"next/font/google\"; // Use whatever font the user specified\nconst font = YourFont({ subsets: [\"latin\"] });\n\nexport default function Layout({ children }: { children: React.ReactNode }) {\n  return <html><body className={font.className}>{children}</body></html>;\n}\n```\n\n## Step 3: Plan the Slides\n\n### Screenshot Framework (Narrative Arc)\n\nAdapt this framework to the user's requested slide count. Not all slots are required \u2014 pick what fits:\n\n| Slot | Purpose | Notes |\n|------|---------|-------|\n| #1 | **Hero / Main Benefit** | App icon + tagline + home screen. This is the ONLY one most people see. |\n| #2 | **Differentiator** | What makes this app unique vs competitors |\n| #3 | **Ecosystem** | Widgets, extensions, watch \u2014 beyond the main app. Skip if N/A. |\n| #4+ | **Core Features** | One feature per slide, most important first |\n| 2nd to last | **Trust Signal** | Identity/craft \u2014 \"made for people who [X]\" |\n| Last | **More Features** | Pills listing extras + coming soon. Skip if few features. |\n\n**Rules:**\n- Each slide sells ONE idea. Never two features on one slide.\n- Vary layouts across slides \u2014 never repeat the same template structure.\n- Include 1-2 contrast slides (inverted bg) for visual rhythm.\n\n## Step 4: Write Copy FIRST\n\nGet all headlines approved before building layouts. Bad copy ruins good design.\n\n### The Iron Rules\n\n1. **One idea per headline.** Never join two things with \"and.\"\n2. **Short, common words.** 1-2 syllables. No jargon unless it's domain-specific.\n3. **3-5 words per line.** Must be readable at thumbnail size in the App Store.\n4. **Line breaks are intentional.** Control where lines break with `<br />`.\n\n### Three Approaches (pick one per slide)\n\n| Type | What it does | Example |\n|------|-------------|---------|\n| **Paint a moment** | You picture yourself doing it | \"Check your coffee without opening the app.\" |\n| **State an outcome** | What your life looks like after | \"A home for every coffee you buy.\" |\n| **Kill a pain** | Name a problem and destroy it | \"Never waste a great bag of coffee.\" |\n\n### What NEVER Works\n\n- **Feature lists as headlines**: \"Log every item with tags, categories, and notes\"\n- **Two ideas joined by \"and\"**: \"Track X and never miss Y\"\n- **Compound clauses**: \"Save and customize X for every Y you own\"\n- **Vague aspirational**: \"Every item, tracked\"\n- **Marketing buzzwords**: \"AI-powered tips\" (unless it's actually AI)\n\n### Bad-to-Better Headline Examples\n\nUse these patterns to rewrite weak copy before building any layout:\n\n| Weak | Better | Why it wins |\n|------|--------|-------------|\n| Track habits and stay motivated | Keep your streak alive | one idea, faster to parse |\n| Organize tasks with AI summaries and smart sorting | Turn notes into next steps | outcome-first, less jargon |\n| Save recipes with tags, filters, and favorites | Find dinner fast | sells the user benefit, not the UI |\n| Manage budgets and never miss payments | See where money goes | cleaner promise, no dual claim |\n| AI-powered wellness support | Feel calmer tonight | concrete emotional outcome |\n\n### Copy Process\n\n1. Write 3 options per slide using the three approaches\n2. Read each at arm's length \u2014 if you can't parse it in 1 second, it's too complex\n3. Check: does each line have 3-5 words? If not, adjust line breaks\n4. Present options to the user with reasoning for each\n\n### Example Prompt Shapes\n\nIf the user gives a weak or underspecified request, reshape it internally into something like:\n\n```text\nBuild App Store screenshots for my habit tracker.\nThe app helps people stay consistent with simple daily routines.\nI want 6 slides, clean/minimal style, warm neutrals, and a calm premium feel.\n```\n\n```text\nGenerate App Store screenshots for my personal finance app.\nThe app's main strengths are fast expense capture, clear monthly trends, and shared budgets.\nI want a sharp, modern style with high contrast and 7 slides.\n```\n\n```text\nCreate exportable App Store screenshots for my AI note-taking app.\nThe core value is turning messy voice notes into clean summaries and action items.\nI want bold copy, dark backgrounds, and a polished tech-forward look.\n```\n\nThe pattern is:\n\n1. app category + core outcome\n2. top features in priority order\n3. desired slide count\n4. style direction\n\n### Localization Rules\n\n- Do not literally translate headlines if the result becomes long or awkward.\n- Re-write copy for the target market while keeping the same selling idea.\n- Re-check line breaks per locale; German, French, and Portuguese often need shorter claims.\n- For RTL languages, also reverse badge alignment, supporting decorations, and phone offsets when the composition depends on left/right weight.\n\n### Reference Apps for Copy Style\n\n- **Raycast** \u2014 specific, descriptive, one concrete value per slide\n- **Turf** \u2014 ultra-simple action verbs, conversational\n- **Mela / Notion** \u2014 warm, minimal, elegant\n\n## Step 5: Build the Page\n\n### Architecture\n\n```\npage.tsx\n\u251c\u2500\u2500 Constants (IPHONE_W/H, IPAD_W/H, SIZES, design tokens)\n\u251c\u2500\u2500 LOCALES / RTL_LOCALES / THEMES / COPY_BY_LOCALE\n\u251c\u2500\u2500 Phone component (mockup PNG with screen overlay)\n\u251c\u2500\u2500 IPad component (CSS-only frame with screen overlay)\n\u251c\u2500\u2500 Caption component (label + headline, accepts canvasW for scaling)\n\u251c\u2500\u2500 Decorative components (blobs, glows, shapes \u2014 based on style direction)\n\u251c\u2500\u2500 iPhoneSlide1..N components (one per slide)\n\u251c\u2500\u2500 iPadSlide1..N components (same designs, adjusted for iPad proportions)\n\u251c\u2500\u2500 IPHONE_SCREENSHOTS / IPAD_SCREENSHOTS arrays (registries)\n\u251c\u2500\u2500 ScreenshotPreview (ResizeObserver scaling + hover export)\n\u2514\u2500\u2500 ScreenshotsPage (grid + locale tabs + theme tabs + device toggle + export logic)\n```\n\n### Export Sizes (Apple Required, portrait)\n\n#### iPhone\n\n```typescript\nconst IPHONE_SIZES = [\n  { label: '6.9\"', w: 1320, h: 2868 },\n  { label: '6.5\"', w: 1284, h: 2778 },\n  { label: '6.3\"', w: 1206, h: 2622 },\n  { label: '6.1\"', w: 1125, h: 2436 },\n] as const;\n```\n\nDesign at the LARGEST size (1320x2868) and scale down for export.\n\n#### iPad (Optional)\n\nIf the user provides iPad screenshots, also generate iPad App Store screenshots:\n\n```typescript\nconst IPAD_SIZES = [\n  { label: '13\" iPad', w: 2064, h: 2752 },\n  { label: '12.9\" iPad Pro', w: 2048, h: 2732 },\n] as const;\n```\n\nDesign iPad slides at 2064x2752 and scale down. iPad screenshots are optional but recommended \u2014 they're required for iPad-only apps and improve listing quality for universal apps.\n\n#### Device Toggle\n\nWhen supporting both devices, add a toggle (iPhone / iPad) in the toolbar next to the size dropdown. The size dropdown should switch between iPhone and iPad sizes based on the selected device. Support a `?device=ipad` URL parameter for headless/automated capture workflows.\n\n#### Theme + Locale Toggles\n\nPlace locale and theme selectors in the same toolbar as device + size. This turns the generator into a small control panel instead of a one-off page.\n\n- `locale` switches screenshot folders and copy dictionaries\n- `theme` switches design tokens only\n- `device` switches iPhone/iPad slide registries\n- `size` switches export resolution only\n\n### Rendering Strategy\n\nEach screenshot is designed at full resolution (1320x2868px). Two copies exist:\n\n1. **Preview**: CSS `transform: scale()` via ResizeObserver to fit a grid card\n2. **Export**: Offscreen at `position: absolute; left: -9999px` at true resolution\n\n### Phone Mockup Component\n\nThe included `mockup.png` has these pre-measured values:\n\n```typescript\nconst MK_W = 1022;  // mockup image width\nconst MK_H = 2082;  // mockup image height\nconst SC_L = (52 / MK_W) * 100;   // screen left offset %\nconst SC_T = (46 / MK_H) * 100;   // screen top offset %\nconst SC_W = (918 / MK_W) * 100;  // screen width %\nconst SC_H = (1990 / MK_H) * 100; // screen height %\nconst SC_RX = (126 / 918) * 100;  // border-radius x %\nconst SC_RY = (126 / 1990) * 100; // border-radius y %\n```\n\n```tsx\nfunction Phone({ src, alt, style, className = \"\" }: {\n  src: string; alt: string; style?: React.CSSProperties; className?: string;\n}) {\n  return (\n    <div className={`relative ${className}`}\n      style={{ aspectRatio: `${MK_W}/${MK_H}`, ...style }}>\n      <img src=\"/mockup.png\" alt=\"\"\n        className=\"block w-full h-full\" draggable={false} />\n      <div className=\"absolute z-10 overflow-hidden\"\n        style={{\n          left: `${SC_L}%`, top: `${SC_T}%`,\n          width: `${SC_W}%`, height: `${SC_H}%`,\n          borderRadius: `${SC_RX}% / ${SC_RY}%`,\n        }}>\n        <img src={src} alt={alt}\n          className=\"block w-full h-full object-cover object-top\"\n          draggable={false} />\n      </div>\n    </div>\n  );\n}\n```\n\n### iPad Mockup Component (CSS-Only)\n\nUnlike the iPhone mockup which uses a pre-measured PNG frame, the iPad uses a **CSS-only frame**. This avoids needing a separate mockup asset and looks clean at any resolution.\n\n**Critical dimension:** The frame aspect ratio must be `770/1000` so the inner screen area (92% width \u00d7 94.4% height) matches the 3:4 aspect ratio of iPad screenshots. Using incorrect proportions causes black bars or stretched screenshots.\n\n```tsx\nfunction IPad({ src, alt, style, className = \"\" }: {\n  src: string; alt: string; style?: React.CSSProperties; className?: string;\n}) {\n  return (\n    <div className={`relative ${className}`}\n      style={{ aspectRatio: \"770/1000\", ...style }}>\n      <div style={{\n        width: \"100%\", height: \"100%\", borderRadius: \"5% / 3.6%\",\n        background: \"linear-gradient(180deg, #2C2C2E 0%, #1C1C1E 100%)\",\n        position: \"relative\", overflow: \"hidden\",\n        boxShadow: \"inset 0 0 0 1px rgba(255,255,255,0.1), 0 8px 40px rgba(0,0,0,0.6)\",\n      }}>\n        {/* Front camera dot */}\n        <div style={{\n          position: \"absolute\", top: \"1.2%\", left: \"50%\",\n          transform: \"translateX(-50%)\", width: \"0.9%\", height: \"0.65%\",\n          borderRadius: \"50%\", background: \"#111113\",\n          border: \"1px solid rgba(255,255,255,0.08)\", zIndex: 20,\n        }} />\n        {/* Bezel edge highlight */}\n        <div style={{\n          position: \"absolute\", inset: 0, borderRadius: \"5% / 3.6%\",\n          border: \"1px solid rgba(255,255,255,0.06)\",\n          pointerEvents: \"none\", zIndex: 15,\n        }} />\n        {/* Screen area */}\n        <div style={{\n          position: \"absolute\", left: \"4%\", top: \"2.8%\",\n          width: \"92%\", height: \"94.4%\",\n          borderRadius: \"2.2% / 1.6%\", overflow: \"hidden\", background: \"#000\",\n        }}>\n          <img src={src} alt={alt}\n            style={{ display: \"block\", width: \"100%\", height: \"100%\",\n              objectFit: \"cover\", objectPosition: \"top\" }}\n            draggable={false} />\n        </div>\n      </div>\n    </div>\n  );\n}\n```\n\n**iPad layout adjustments vs iPhone:**\n- Use `width: \"65-70%\"` for iPad mockups (vs 82-86% for iPhone) \u2014 iPad is wider relative to its height\n- Two-iPad layouts work the same as two-phone layouts but with adjusted widths\n- Caption font sizes should scale from `canvasW` (which is 2064 for iPad vs 1320 for iPhone)\n- Same slide designs/copy can be reused \u2014 just swap the Phone component for IPad and adjust positioning\n\n### Typography (Resolution-Independent)\n\nAll sizing relative to canvas width W:\n\n| Element | Size | Weight | Line Height |\n|---------|------|--------|-------------|\n| Category label | `W * 0.028` | 600 (semibold) | default |\n| Headline | `W * 0.09` to `W * 0.1` | 700 (bold) | 1.0 |\n| Hero headline | `W * 0.1` | 700 (bold) | 0.92 |\n\n### Phone Placement Patterns\n\nVary across slides \u2014 NEVER use the same layout twice in a row:\n\n**Centered phone** (hero, single-feature):\n```\nbottom: 0, width: \"82-86%\", translateX(-50%) translateY(12-14%)\n```\n\n**Two phones layered** (comparison):\n```\nBack: left: \"-8%\", width: \"65%\", rotate(-4deg), opacity: 0.55\nFront: right: \"-4%\", width: \"82%\", translateY(10%)\n```\n\n**Phone + floating elements** (only if user provided component PNGs):\n```\nCards should NOT block the phone's main content.\nPosition at edges, slight rotation (2-5deg), drop shadows.\nIf distracting, push partially off-screen or make smaller.\n```\n\n### \"More Features\" Slide (Optional)\n\nDark/contrast background with app icon, headline (\"And so much more.\"), and feature pills. Can include a \"Coming Soon\" section with dimmer pills.\n\n## Step 6: Export\n\n### Why html-to-image, NOT html2canvas\n\n`html2canvas` breaks on CSS filters, gradients, drop-shadow, backdrop-filter, and complex clipping. `html-to-image` uses native browser SVG serialization \u2014 handles all CSS faithfully.\n\n### Pre-load Images as Data URIs (CRITICAL)\n\n`html-to-image` works by cloning the DOM into an SVG `<foreignObject>`, then painting it to a canvas. During cloning, it re-fetches every `<img>` src. These re-fetches are non-deterministic \u2014 some hit the browser cache, some silently fail. Failed images render as transparent rectangles in the export (black after alpha flattening).\n\n**The fix: pre-convert all images to base64 data URIs at page load and use those as `src` everywhere.** When `html-to-image` clones the DOM, data URI sources are already inline \u2014 no fetch needed.\n\n```typescript\n// At module level \u2014 list all image paths used in slides\nconst IMAGE_PATHS = [\n  \"/mockup.png\",\n  \"/app-icon.png\",\n  \"/screenshots/home.png\",\n  \"/screenshots/feature-1.png\",\n  // ... all images used in any slide\n];\n\nconst imageCache: Record<string, string> = {};\n\nasync function preloadAllImages() {\n  await Promise.all(\n    IMAGE_PATHS.map(async (path) => {\n      const resp = await fetch(path);\n      const blob = await resp.blob();\n      const dataUrl = await new Promise<string>((resolve) => {\n        const reader = new FileReader();\n        reader.onloadend = () => resolve(reader.result as string);\n        reader.readAsDataURL(blob);\n      });\n      imageCache[path] = dataUrl;\n    })\n  );\n}\n\n// Helper \u2014 use in every <img> src\nfunction img(path: string): string {\n  return imageCache[path] || path;\n}\n```\n\nIn the page component, gate rendering on preload completion:\n\n```typescript\nconst [ready, setReady] = useState(false);\nuseEffect(() => { preloadAllImages().then(() => setReady(true)); }, []);\nif (!ready) return <p>Loading images...</p>;\n```\n\nIn every slide component, use `img()` instead of raw paths:\n\n```tsx\n// Before (breaks non-deterministically):\n<img src=\"/screenshots/home.png\" />\n\n// After (always works):\n<img src={img(\"/screenshots/home.png\")} />\n```\n\n**Also flatten RGBA source images to RGB before use.** If your app screenshots are RGBA PNGs, `html-to-image` can fail to serialize them. Convert source images to RGB (no alpha) before placing them in `public/screenshots/`.\n\n### Export Implementation\n\n```typescript\nimport { toPng } from \"html-to-image\";\n\n// Before capture: move element on-screen\nel.style.left = \"0px\";\nel.style.opacity = \"1\";\nel.style.zIndex = \"-1\";\n\nconst opts = { width: W, height: H, pixelRatio: 1, cacheBust: true };\n\n// CRITICAL: Double-call trick \u2014 first warms up fonts/images, second produces clean output\nawait toPng(el, opts);\nconst dataUrl = await toPng(el, opts);\n\n// After capture: move back off-screen\nel.style.left = \"-9999px\";\nel.style.opacity = \"\";\nel.style.zIndex = \"\";\n```\n\n### Export Matrix\n\nIf the project supports multiple locales and themes, add bulk export helpers so the user can export everything in one pass:\n\n```typescript\nconst jobs = LOCALES.flatMap(locale =>\n  ACTIVE_THEME_IDS.flatMap(themeId =>\n    ACTIVE_DEVICES.flatMap(device =>\n      getSlidesFor(device).map((slide, index) => ({\n        locale,\n        themeId,\n        device,\n        index,\n        slide,\n      })),\n    ),\n  ),\n);\n```\n\nName files so they sort cleanly and preserve metadata:\n\n```text\n01-hero-en-clean-light-iphone-1320x2868.png\n01-hero-ar-dark-bold-ipad-2064x2752.png\n```\n\nAt minimum, support:\n\n1. export current slide\n2. export all slides for current locale/device/theme\n3. export all locales for current theme\n4. export full matrix when the user explicitly asks for it\n\n### Key Rules\n\n- **Double-call trick**: First `toPng()` loads fonts/images lazily. Second produces clean output. Without this, exports are blank.\n- **On-screen for capture**: Temporarily move to `left: 0` before calling `toPng`.\n- **Offscreen container**: Use `position: absolute; left: -9999px` (not `fixed`).\n- **Resizing**: Load data URL into Image, draw onto canvas at target size.\n- 300ms delay between sequential exports.\n- Set `fontFamily` on the offscreen container.\n- **Numbered filenames**: Prefix exports with zero-padded index so they sort correctly: `01-hero-1320x2868.png`, `02-freshness-1320x2868.png`, etc. Use `String(index + 1).padStart(2, \"0\")`.\n- **Pre-loaded data URIs**: Always use the `img()` helper with pre-loaded base64 data URIs for all `<img>` sources. Never use raw file paths in slide components \u2014 `html-to-image` will fail to capture them non-deterministically.\n- **RGB source images**: Ensure all source screenshots in `public/screenshots/` are RGB (not RGBA). RGBA PNGs can fail during SVG serialization and produce transparent/black regions in exports.\n\n## Step 7: Final QA Gate\n\nBefore handing the page back to the user, review every slide against this checklist:\n\n### Message Quality\n\n- **One idea per slide**: if a headline sells two ideas, split it or simplify it\n- **First slide is strongest**: the hero slide should communicate the main benefit immediately\n- **Readable in one second**: if you cannot parse it instantly at arm's length, rewrite it\n\n### Visual Quality\n\n- **No repeated layouts in sequence**: adjacent slides should not feel templated\n- **Decorative elements support the story**: they should add energy without covering the app UI\n- **Visual rhythm exists**: include at least one contrast slide when the set is long enough\n\n### Export Quality\n\n- **No clipped text or assets** after scaling to the selected export size\n- **Screenshots are correctly aligned** inside the phone or iPad frame\n- **Filenames sort correctly** with zero-padded numeric prefixes\n- **Theme tokens are applied consistently** across all slides in the same preset\n- **Localized copy still fits** after translation, especially on long-word languages\n- **RTL slides feel designed, not just flipped**\n\n### Hand-off Behavior\n\nWhen you present the finished work:\n\n1. briefly explain the narrative arc across the slides\n2. mention any slides that intentionally use contrast or different layout treatment\n3. call out any assumptions you made about brand tone, copy, or missing assets\n\n## Common Mistakes\n\n| Mistake | Fix |\n|---------|-----|\n| All slides look the same | Vary phone position (center, left, right, two-phone, no-phone) |\n| Decorative elements invisible | Increase size and opacity \u2014 better too visible than invisible |\n| Copy is too complex | \"One second at arm's length\" test |\n| Floating elements block the phone | Move off-screen edges or above the phone |\n| Plain white/black background | Use gradients \u2014 even subtle ones add depth |\n| Too cluttered | Remove floating elements, simplify to phone + caption |\n| Too simple/empty | Add larger decorative elements, floating items at edges |\n| Headlines use \"and\" | Split into two slides or pick one idea |\n| No visual contrast across slides | Mix light and dark backgrounds |\n| Export is blank | Use double-call trick; move element on-screen before capture |\n| Phone screens black/empty in export but visible in preview | Images not inlined \u2014 use `preloadAllImages()` + `img()` helper so all `<img>` src attributes are base64 data URIs before `toPng` runs |\n| Some slides export correctly, others have missing images | Non-deterministic `html-to-image` fetch race condition \u2014 same root cause as above, fix with pre-loaded data URIs |\n| Screenshots rejected by App Store with IMAGE_ALPHA_NOT_ALLOWED | Source PNGs have alpha channel \u2014 flatten to RGB before use (composite onto black with PIL or remove alpha in your image editor) |\n",
+  "optimized_content": "---\nname: app-store-screenshots\ndescription: Use when building App Store screenshot pages, generating exportable marketing screenshots for iOS apps, or creating programmatic screenshot generators with Next.js. Triggers on app store, screenshots, marketing assets, html-to-image, phone mockup.\n---\n\nReview code using the minimum rules needed for correctness, constraints, output quality, and focused references.\n\n## Core Instructions\n\n- **Brand colors** \u2014 \"What are your brand colors? (accent color, text color, background preference)\"\n- **Font** \u2014 \"What font does your app use? (or what font do you want for the screenshots?)\"\n- **Additional instructions** \u2014 \"Any specific requirements, constraints, or preferences?\"\n- **Theme preset names**: turn vague style requests into reusable theme ids the user can switch between\n- Each slide sells ONE idea. Never two features on one slide.\n- Vary layouts across slides \u2014 never repeat the same template structure.\n- **One idea per headline.** Never join two things with \"and.\"\n- **3-5 words per line.** Must be readable at thumbnail size in the App Store.\n- **Two ideas joined by \"and\"**: \"Track X and never miss Y\"\n- **Compound clauses**: \"Save and customize X for every Y you own\"\n- Present options to the user with reasoning for each\n- Do not literally translate headlines if the result becomes long or awkward.\n- Re-write copy for the target market while keeping the same selling idea.\n- Use `width: \"65-70%\"` for iPad mockups (vs 82-86% for iPhone) \u2014 iPad is wider relative to its height\n- Caption font sizes should scale from `canvasW` (which is 2064 for iPad vs 1320 for iPhone)\n- Same slide designs/copy can be reused \u2014 just swap the Phone component for IPad and adjust positioning\n- export full matrix when the user explicitly asks for it\n- **Offscreen container**: Use `position: absolute; left: -9999px` (not `fixed`).\n- **Resizing**: Load data URL into Image, draw onto canvas at target size.\n- **Numbered filenames**: Prefix exports with zero-padded index so they sort correctly: `01-hero-1320x2868.png`, `02-freshness-1320x2868.png`, etc. Use `String(index + 1).padStart(2, \"0\")`.\n- **Pre-loaded data URIs**: Always use the `img()` helper with pre-loaded base64 data URIs for all `<img>` sources. Never use raw file paths in slide components \u2014 `html-to-image` will fail to capture them non-deterministically.\n- **RGB source images**: Ensure all source screenshots in `public/screenshots/` are RGB (not RGBA). RGBA PNGs can fail during SVG serialization and produce transparent/black regions in exports.\n- **First slide is strongest**: the hero slide should communicate the main benefit immediately\n- **No repeated layouts in sequence**: adjacent slides should not feel templated\n- **Decorative elements support the story**: they should add energy without covering the app UI\n- mention any slides that intentionally use contrast or different layout treatment\n"
 }
