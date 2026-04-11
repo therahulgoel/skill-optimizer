@@ -34,3 +34,5 @@ Notes
 
 License: MIT — see [LICENSE](LICENSE)
 
+Made with ❤️ by [@therahulgoel](https://github.com/therahulgoel)
+

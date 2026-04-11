@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "skill-optimizer"
 version = "0.1.0"
 description = "Minimize SKILL.md and AGENTS.md files by keeping only rules that justify their context cost"
-authors = [{name = "Skill Optimizer Team"}]
+authors = [{name = "Skill Optimizer Team"}, {name = "Rahul Goel (@therahulgoel)"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"

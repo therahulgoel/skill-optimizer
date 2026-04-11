@@ -110,7 +110,8 @@ function AppContent() {
       </main>
 
       <footer className="app-footer">
-        <p>Generate a `skill_trim_report.json`, compare original vs optimized rules, then replace the skills already used by your agent.</p>
+        <p>Generate a <code>skill_trim_report.json</code>, compare original vs optimized rules, then replace the skills already used by your agent.</p>
+        <p className="made-by">Made with ❤️ by <a href="https://github.com/therahulgoel" target="_blank" rel="noopener noreferrer">@therahulgoel</a></p>
       </footer>
     </div>
   )

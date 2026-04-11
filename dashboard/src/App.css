@@ -91,6 +91,18 @@
   font-weight: 500;
 }
 
+.app-footer .made-by {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.app-footer .made-by a {
+  color: var(--accent, #0B70FF);
+  text-decoration: none;
+}
+
 /* Loading State */
 .loading {
   display: flex;

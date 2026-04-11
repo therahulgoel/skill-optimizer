@@ -1,6 +1,7 @@
 {
   "name": "context-surgeon-dashboard",
   "version": "0.1.0",
+  "author": "@therahulgoel",
   "type": "module",
   "scripts": {
     "dev": "vite",
