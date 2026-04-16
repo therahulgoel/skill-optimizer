@@ -283,7 +283,8 @@ def trends(trends_dir, compare, json):
     default=None,
     help='Optional root folder used to suggest where the optimized skill should replace an existing skill'
 )
-def trim_skill(skill, output, mode, replacement_root):
+def trim_skill(
+    skill, output, mode, replacement_root):
     """Trim an open-source SKILL.md file to a practical minimum.
 
     Generates two artifacts:

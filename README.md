@@ -11,10 +11,53 @@ Why use Skill Optimizer?
 
 Quick start
 
-CLI (fast):
+CLI (fast)
+
+User-level install (recommended)
+
+Install for the current user (adds the `skill-optimizer` console script to your user `bin`):
+
 ```bash
-pip install -e .
+# Using `python3` (recommended)
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install --user .
+
+# Ensure the user `bin` directory is on your PATH (works on macOS and Linux):
+echo 'export PATH="$(python3 -m site --user-base)/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Or using `pip`/`pip3`:
+
+```bash
+pip install --user .        # or `pip3 install --user .`
+```
+
+Optional: install with `pipx` for isolated, per-user CLI installs:
+
+```bash
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath   # reopen your shell if needed
+pipx install .
+```
+
+Editable / development install (from repo root)
+
+```bash
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install -e .
+```
+
+Run the CLI:
+
+```bash
 skill-optimizer trim-skill --skill /path/to/SKILL.md --output results/ --mode balanced
+```
+
+Run without installing (useful for development):
+
+```bash
+python3 -m cli.main trim-skill --skill /path/to/SKILL.md --output results/ --mode balanced
 ```
 
 Dashboard (visual):

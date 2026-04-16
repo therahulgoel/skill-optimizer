@@ -13,6 +13,7 @@
     "original_tokens": 152,
     "optimized_tokens": 82,
     "actual_tokens_saved": 70,
+    
     "token_reduction_pct": 46.1
   },
   "basis": [
