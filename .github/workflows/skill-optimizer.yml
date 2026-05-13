@@ -70,118 +70,192 @@ jobs:
             skill-optimizer trim-skill --skill "$file" --output "./results" --mode "$MODE"
           done
 
-      - name: Write report script
+      - name: Write detailed report script
         if: steps.find.outputs.found == 'true'
         run: |
           cat > generate_report.py << 'ENDOFSCRIPT'
           import json
           import os
           from pathlib import Path
-
-          total_skills = 0
-          total_tokens = 0
-          total_kept = 0
-          total_removed = 0
+          from textwrap import shorten
 
           reports = list(Path('results').glob('skill_trim_report.json'))
 
-          for report_path in reports:
-              try:
-                  with open(report_path) as f:
-                      d = json.load(f)
-                  skill = d.get('skill', {})
-                  total_skills += skill.get('original_rule_count', 0)
-                  total_tokens += skill.get('actual_tokens_saved', 0)
-                  total_kept += skill.get('kept_rule_count', 0)
-                  total_removed += skill.get('removed_rule_count', 0)
-              except:
-                  pass
-
-          avg = total_tokens // total_skills if total_skills > 0 else 0
-
           lines = []
-          lines.append("## 🤖 Skill Optimizer Report")
+          lines.append("## 🤖 Skill Optimizer")
           lines.append("")
-          lines.append("> Automated ablation testing - keep what works, remove the rest")
-          lines.append("")
-          lines.append("### Summary")
-          lines.append("")
-          lines.append("| Metric | Value |")
-          lines.append("|--------|-------|")
-          lines.append(f"| Skills | {total_skills} |")
-          lines.append(f"| Tokens saved | {total_tokens} |")
-          lines.append(f"| Avg per skill | {avg} |")
-          lines.append(f"| Rules kept | {total_kept} |")
-          lines.append(f"| Rules removed | {total_removed} |")
+          lines.append("Minimize existing agent skills to the smallest usable rule set and measure token savings.")
           lines.append("")
 
-          lines.append("### Per-Skill Breakdown")
-          lines.append("")
-          lines.append("| Skill | Original | Trimmed | Saved | Reduction |")
-          lines.append("|-------|----------|--------|------|----------|")
-
+          # Per-skill detailed sections
           for report_path in reports:
               try:
                   with open(report_path) as f:
                       d = json.load(f)
+
                   skill = d.get('skill', {})
                   name = skill.get('name', report_path.stem)
-                  orig = skill.get('original_rule_count', 0)
-                  kept = skill.get('kept_rule_count', 0)
+                  desc = skill.get('description', '')
+                  orig_rules = skill.get('original_rule_count', 0)
+                  orig_tokens = skill.get('original_tokens', 0)
+                  kept_rules = skill.get('kept_rule_count', 0)
+                  kept_tokens = skill.get('optimized_tokens', 0)
                   saved = skill.get('actual_tokens_saved', 0)
                   pct = skill.get('token_reduction_pct', 0)
-                  lines.append(f"| {name} | {orig} | {kept} | {saved} | **{pct:.1f}%** |")
-              except:
+                  mode = d.get('metadata', {}).get('mode', 'balanced')
+
+                  # Skill header
+                  lines.append("---")
+                  lines.append("")
+                  lines.append(f"### {name}")
+                  lines.append("")
+                  if desc:
+                      lines.append(f"_{desc}_")
+                  lines.append("")
+                  lines.append(f"**Source:** algorithmic-art  ·  **Mode:** {mode}")
+                  lines.append("")
+
+                  # Download links
+                  source = d.get('metadata', {}).get('source_path', '')
+                  optimized = d.get('metadata', {}).get('optimized_skill_path', '')
+                  lines.append(f"[Download optimized skill]({optimized})")
+                  lines.append(f"[Download comparison report]({report_path})")
+                  lines.append("")
+
+                  # Replacement helper
+                  lines.append("### Replacement helper")
+                  lines.append("")
+                  lines.append("Use this if your team wants to drop the optimized file back into an agent repo quickly.")
+                  lines.append("")
+                  lines.append(f"**Suggested path:** {name}/SKILL.md")
+                  lines.append("")
+
+                  # Original section
+                  lines.append("#### Original")
+                  lines.append(f"**{orig_rules} rules**")
+                  lines.append(f"**{orig_tokens} estimated tokens**")
+                  lines.append("")
+
+                  # Optimized section
+                  lines.append("#### Optimized")
+                  lines.append(f"**{kept_rules} rules**")
+                  lines.append(f"**{kept_tokens} estimated tokens**")
+                  lines.append("")
+
+                  # Removed section
+                  lines.append("#### Removed")
+                  lines.append(f"**{orig_rules - kept_rules} rules**")
+                  lines.append(f"**{saved} tokens saved ({pct:.1f}% reduction)**")
+                  lines.append("")
+
+                  # Comparison
+                  orig_size = len(d.get('original_content', '').split('\n'))
+                  opt_size = len(d.get('optimized_content', '').split('\n'))
+                  lines.append("#### Comparison")
+                  lines.append(f"**{orig_size} → {opt_size} lines**")
+                  lines.append("original vs optimized file size")
+                  lines.append("")
+
+                  # Trimming basis
+                  lines.append("#### Trimming basis")
+                  lines.append("")
+                  lines.append("This is the decision framework used to keep or remove rules.")
+                  lines.append("")
+
+                  basis = d.get('basis', [])
+                  for b in basis[:6]:
+                      b_name = b.get('name', 'unnamed')
+                      b_desc = b.get('description', '')[:100]
+                      lines.append(f"- **{b_name}**")
+                      if b_desc:
+                          lines.append(f"  - {b_desc}")
+                  lines.append("")
+
+                  # Mode note
+                  lines.append(f"**Mode:** {mode.title()}")
+                  lines.append(f"{mode.title()} mode removes duplication while preserving practical team guidance.")
+                  lines.append("")
+
+                  # Rule-by-rule comparison
+                  lines.append("#### Rule-by-rule comparison")
+                  lines.append("Every removed rule includes the basis for removal so teams can review the tradeoff.")
+                  lines.append("")
+
+                  # Kept rules
+                  lines.append("**Kept**")
+                  lines.append(f"{kept_rules} rules")
+                  lines.append("")
+
+                  kept_list = d.get('kept_rules', [])
+                  for r in kept_list[:10]:
+                      text = r.get('text', '')[:80]
+                      tokens = r.get('tokens', 0)
+                      reason = r.get('reason', '')[:80]
+                      if text.strip():
+                          lines.append(f"- {text}")
+                          lines.append(f"  **{tokens} tokens**")
+                          if reason:
+                              lines.append(f"  {reason}")
+                  lines.append("")
+
+                  # Removed rules
+                  lines.append("**Removed**")
+                  lines.append(f"{orig_rules - kept_rules} rules")
+                  lines.append("")
+
+                  removed_list = d.get('removed_rules', [])
+                  for r in removed_list[:15]:
+                      text = r.get('text', '')[:80]
+                      tokens = r.get('tokens', 0)
+                      reason = r.get('reason', '')[:80]
+                      if text.strip():
+                          lines.append(f"- {text}")
+                          lines.append(f"  **{tokens} tokens**")
+                          if reason:
+                              lines.append(f"  {reason}")
+                  lines.append("")
+
+                  # Original content
+                  lines.append("#### Original skill")
+                  lines.append(f"**{orig_rules} rules**")
+                  lines.append("---")
+                  orig_content = d.get('original_content', '')
+                  if orig_content:
+                      # Take first 2000 chars
+                      lines.append("```markdown")
+                      lines.append(orig_content[:2500])
+                      if len(orig_content) > 2500:
+                          lines.append("...")
+                      lines.append("```")
+                  lines.append("")
+
+                  # Optimized content
+                  lines.append("#### Optimized skill")
+                  lines.append(f"**{kept_rules} rules**")
+                  lines.append("---")
+                  opt_content = d.get('optimized_content', '')
+                  if opt_content:
+                      lines.append("```markdown")
+                      lines.append(opt_content[:1500])
+                      if len(opt_content) > 1500:
+                          lines.append("...")
+                      lines.append("```")
+
+              except Exception as e:
+                  print(f"Error: {e}", file=__import__('sys').stderr)
                   pass
 
-          lines.append("")
-          lines.append("### Rule Details")
-          lines.append("")
-          lines.append("#### Kept Rules (will affect behavior)")
-          lines.append("")
-
-          for report_path in reports:
-              try:
-                  with open(report_path) as f:
-                      d = json.load(f)
-                  name = d.get('skill', {}).get('name', report_path.stem)
-                  lines.append(f"**{name}**")
-                  lines.append("")
-                  kept_rules = d.get('kept_rules', [])[:8]
-                  for r in kept_rules:
-                      text = r.get('text', 'unnamed')[:50]
-                      reason = r.get('reason', '')[:40]
-                      lines.append(f"- {text}")
-                      if reason:
-                          lines.append(f"  - Keep: {reason}")
-                  lines.append("")
-              except:
-                  pass
-
-          lines.append("#### Removed Rules (optimized out)")
-          lines.append("")
-
-          for report_path in reports:
-              try:
-                  with open(report_path) as f:
-                      d = json.load(f)
-                  name = d.get('skill', {}).get('name', report_path.stem)
-                  lines.append(f"**{name}**")
-                  lines.append("")
-                  removed_rules = d.get('removed_rules', [])[:8]
-                  for r in removed_rules:
-                      text = r.get('text', 'unnamed')[:50]
-                      reason = r.get('reason', '')[:40]
-                      lines.append(f"- {text}")
-                      if reason:
-                          lines.append(f"  - Remove: {reason}")
-                  lines.append("")
-              except:
-                  pass
-
+          # Footer
           lines.append("---")
-          lines.append("*Processed by [Skill Optimizer](https://github.com/therahulgoel/skill-optimizer) by [@therahulgoel](https://github.com/therahulgoel)*")
+          lines.append("")
+          lines.append("_How to use the optimized skill_")
+          lines.append("Download the optimized file, replace the current skill in your agent, then validate with real prompts before rolling it out wider.")
+          lines.append("")
+          lines.append("Generate a skill_trim_report.json, compare original vs optimized rules, then replace the skills already used by your agent.")
+          lines.append("")
+          lines.append("Made with ❤️ by [@therahulgoel](https://github.com/therahulgoel)")
 
+          # Write file
           with open('pr_comment.md', 'w') as f:
               f.write('\n'.join(lines))
           ENDOFSCRIPT
