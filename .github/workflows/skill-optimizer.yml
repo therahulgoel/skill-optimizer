@@ -49,7 +49,6 @@ jobs:
         run: |
           MODE="${{ github.event.inputs.mode || 'balanced' }}"
           echo "mode=$MODE" >> $GITHUB_OUTPUT
-          echo "Finding skills directories..."
 
       - name: Find SKILL.md files
         id: find
@@ -61,7 +60,6 @@ jobs:
           else
             echo "found=true" >> $GITHUB_OUTPUT
             echo "$SKILL_FILES" > skill_files.txt
-            echo "files=$(cat skill_files.txt)" >> $GITHUB_OUTPUT
           fi
 
       - name: Run optimization
@@ -69,79 +67,123 @@ jobs:
         run: |
           MODE=${{ steps.mode.outputs.mode }}
           cat skill_files.txt | while read file; do
-            echo "Trimming $file..."
-            skill-optimizer trim-skill \
-              --skill "$file" \
-              --output "./results" \
-              --mode "$MODE"
+            skill-optimizer trim-skill --skill "$file" --output "./results" --mode "$MODE"
           done
 
-      - name: Generate summary
+      - name: Write report script
         if: steps.find.outputs.found == 'true'
-        id: summary
         run: |
-          # Generate detailed markdown report
-          {
-            echo "## 🤖 Skill Optimizer Report"
-            echo ""
-            echo "### Summary"
-            echo ""
-            echo "| Metric | Value |"
-            echo "|--------|-------|"
-          } > pr_comment.md
+          cat > generate_report.py << 'ENDOFSCRIPT'
+          import json
+          import os
+          from pathlib import Path
 
-          TOTAL_SKILLS=0
-          TOTAL_TOKENS=0
-          for report in $(find results -name "skill_trim_report.json" 2>/dev/null); do
-            if [ -f "$report" ]; then
-              SKILLS=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('original_rule_count',1))" 2>/dev/null)
-              TOKENS=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('actual_tokens_saved',0))" 2>/dev/null)
-              TOTAL_SKILLS=$((TOTAL_SKILLS + ${SKILLS:-0}))
-              TOTAL_TOKENS=$((TOTAL_TOKENS + ${TOKENS:-0}))
-            fi
-          done
-          AVG=0
-          if [ $TOTAL_SKILLS -gt 0 ]; then
-            AVG=$((TOTAL_TOKENS / TOTAL_SKILLS))
-          fi
+          total_skills = 0
+          total_tokens = 0
+          total_kept = 0
+          total_removed = 0
 
-          echo "| Skills | $TOTAL_SKILLS |" >> pr_comment.md
-          echo "| Tokens saved | $TOTAL_TOKENS |" >> pr_comment.md
-          echo "| Avg per skill | $AVG |" >> pr_comment.md
+          reports = list(Path('results').glob('skill_trim_report.json'))
 
-          echo "" >> pr_comment.md
-          echo "### Per-Skill Breakdown" >> pr_comment.md
-          echo "" >> pr_comment.md
-          echo "| Skill | Original | Trimmed | Saved | Reduction |" >> pr_comment.md
-          echo "|-------|----------|--------|------|----------|" >> pr_comment.md
+          for report_path in reports:
+              try:
+                  with open(report_path) as f:
+                      d = json.load(f)
+                  skill = d.get('skill', {})
+                  total_skills += skill.get('original_rule_count', 0)
+                  total_tokens += skill.get('actual_tokens_saved', 0)
+                  total_kept += skill.get('kept_rule_count', 0)
+                  total_removed += skill.get('removed_rule_count', 0)
+              except:
+                  pass
 
-          for report in $(find results -name "skill_trim_report.json" 2>/dev/null); do
-            if [ -f "$report" ]; then
-              NAME=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('name','unknown'))" 2>/dev/null)
-              ORIG=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('original_rule_count',0))" 2>/dev/null)
-              KEPT=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('kept_rule_count',0))" 2>/dev/null)
-              SAVED=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('actual_tokens_saved',0))" 2>/dev/null)
-              PCT=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('token_reduction_pct',0))" 2>/dev/null)
-              echo "| $NAME | $ORIG | $KEPT | $SAVED | **$PCT%** |" >> pr_comment.md
-            fi
-          done
+          avg = total_tokens // total_skills if total_skills > 0 else 0
 
-          echo "" >> pr_comment.md
-          echo "### Files Changed" >> pr_comment.md
-          echo "" >> pr_comment.md
-          for opt in $(find results -name "*.optimized.md" 2>/dev/null); do
-            NAME=$(basename "$opt" .optimized.md)
-            echo "- \`$opt\` - Optimized skill" >> pr_comment.md
-          done
+          lines = []
+          lines.append("## 🤖 Skill Optimizer Report")
+          lines.append("")
+          lines.append("> Automated ablation testing - keep what works, remove the rest")
+          lines.append("")
+          lines.append("### Summary")
+          lines.append("")
+          lines.append("| Metric | Value |")
+          lines.append("|--------|-------|")
+          lines.append(f"| Skills | {total_skills} |")
+          lines.append(f"| Tokens saved | {total_tokens} |")
+          lines.append(f"| Avg per skill | {avg} |")
+          lines.append(f"| Rules kept | {total_kept} |")
+          lines.append(f"| Rules removed | {total_removed} |")
+          lines.append("")
 
-          echo "" >> pr_comment.md
-          echo "---" >> pr_comment.md
-          echo "*Processed by [Skill Optimizer](https://github.com/therahulgoel/skill-optimizer) by [@therahulgoel](https://github.com/therahulgoel)*" >> pr_comment.md
+          lines.append("### Per-Skill Breakdown")
+          lines.append("")
+          lines.append("| Skill | Original | Trimmed | Saved | Reduction |")
+          lines.append("|-------|----------|--------|------|----------|")
 
-          cat pr_comment.md
-          echo "skills=$TOTAL_SKILLS" >> $GITHUB_OUTPUT
-          echo "tokens=$TOTAL_TOKENS" >> $GITHUB_OUTPUT
-          echo "avg=$AVG" >> $GITHUB_OUTPUT
+          for report_path in reports:
+              try:
+                  with open(report_path) as f:
+                      d = json.load(f)
+                  skill = d.get('skill', {})
+                  name = skill.get('name', report_path.stem)
+                  orig = skill.get('original_rule_count', 0)
+                  kept = skill.get('kept_rule_count', 0)
+                  saved = skill.get('actual_tokens_saved', 0)
+                  pct = skill.get('token_reduction_pct', 0)
+                  lines.append(f"| {name} | {orig} | {kept} | {saved} | **{pct:.1f}%** |")
+              except:
+                  pass
+
+          lines.append("")
+          lines.append("### Rule Details")
+          lines.append("")
+          lines.append("#### Kept Rules (will affect behavior)")
+          lines.append("")
+
+          for report_path in reports:
+              try:
+                  with open(report_path) as f:
+                      d = json.load(f)
+                  name = d.get('skill', {}).get('name', report_path.stem)
+                  lines.append(f"**{name}**")
+                  lines.append("")
+                  kept_rules = d.get('kept_rules', [])[:8]
+                  for r in kept_rules:
+                      rule_name = r.get('name', 'unnamed')
+                      verdict = r.get('verdict', '')
+                      lines.append(f"- {rule_name} ({verdict})")
+                  lines.append("")
+              except:
+                  pass
+
+          lines.append("#### Removed Rules (optimized out)")
+          lines.append("")
+
+          for report_path in reports:
+              try:
+                  with open(report_path) as f:
+                      d = json.load(f)
+                  name = d.get('skill', {}).get('name', report_path.stem)
+                  lines.append(f"**{name}**")
+                  lines.append("")
+                  removed_rules = d.get('removed_rules', [])[:8]
+                  for r in removed_rules:
+                      rule_name = r.get('name', 'unnamed')
+                      lines.append(f"- {rule_name}")
+                  lines.append("")
+              except:
+                  pass
+
+          lines.append("---")
+          lines.append("*Processed by [Skill Optimizer](https://github.com/therahulgoel/skill-optimizer) by [@therahulgoel](https://github.com/therahulgoel)*")
+
+          with open('pr_comment.md', 'w') as f:
+              f.write('\n'.join(lines))
+          ENDOFSCRIPT
+
+      - name: Generate detailed report
+        if: steps.find.outputs.found == 'true'
+        run: python3 generate_report.py
 
       - name: Upload results
         if: steps.find.outputs.found == 'true'
@@ -166,8 +208,6 @@ jobs:
             } catch (e) {
               body = '## 🤖 Skill Optimizer\n\nNo skills found to optimize.';
             }
-
-            console.log('Posting comment to', owner, repo, 'PR #'+prNumber);
 
             github.rest.issues.createComment({
               owner: owner,
