@@ -1,4 +1,4 @@
-# ContextSurgeon — Complete Feature Specification
+# Skill Optimizer — Complete Feature Specification
 
 **Version:** 0.1.0 (Initial Build)  
 **Date:** March 20, 2026  
@@ -8,7 +8,7 @@
 
 ## 📋 Executive Summary
 
-ContextSurgeon is a complete ablation testing system for `AGENTS.md` rules. It comprises:
+Skill Optimizer is a complete ablation testing system for `AGENTS.md` rules. It comprises:
 1. **Python CLI** — Parses rules, runs A/B tests with Codex, computes ROI, generates optimized AGENTS.md
 2. **React Dashboard** — Visualizes results, allows filtering/searching, exports optimizations
 3. **Caching & Versioning** — Stores results for trend analysis across iterations
@@ -316,7 +316,7 @@ Already exists. No changes.
 **New file** at project root.
 
 ```yaml
-# ContextSurgeon Verifier Configuration
+# Skill Optimizer Verifier Configuration
 # Define how to validate each task's output
 
 default_verifier:
@@ -404,7 +404,7 @@ DASHBOARD_AUTO_OPEN=true
 
 ### `AGENTS.optimized.md` — Generated Output
 ```markdown
-# AGENTS.md — Optimized by ContextSurgeon
+# AGENTS.md — Optimized by Skill Optimizer
 
 **Run:** 2026-03-20 16:42  
 **Original:** 34 rules / 2,847 tokens  

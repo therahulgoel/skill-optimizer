@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup and test ContextSurgeon locally.
+Setup and test Skill Optimizer locally.
 """
 
 import subprocess
@@ -25,12 +25,12 @@ def main():
     project_root = PROJECT_ROOT
     cli_cmd = [sys.executable, "-m", "cli.main"]
     
-    print("🚀 ContextSurgeon — Setup & Test\n")
+    print("🚀 Skill Optimizer — Setup & Test\n")
     
     # Install package in development mode
     run(
         [sys.executable, "-m", "pip", "install", "-e", "."],
-        "Installing ContextSurgeon..."
+        "Installing Skill Optimizer..."
     )
     
     # Test CLI help
@@ -64,12 +64,12 @@ def main():
         print("✅ report.json generated!")
     
     print("\n" + "="*70)
-    print("🎉 All tests passed! ContextSurgeon is ready to go.")
+    print("🎉 All tests passed! Skill Optimizer is ready to go.")
     print("="*70)
     print("\nNext steps:")
     print("1. View results: cat results/AGENTS.optimized.md")
     print("2. View report:   cat results/report.json")
-    print("3. Run on your own AGENTS.md: context-surgeon run --agents YOUR_AGENTS.md --tasks ./tasks/")
+    print("3. Run on your own AGENTS.md: skill-optimizer trim-skill --agents YOUR_AGENTS.md --tasks ./tasks/")
 
 if __name__ == "__main__":
     main()

@@ -78,7 +78,7 @@ try:
     try:
         __version__ = version("skill-optimizer")
     except Exception:
-        __version__ = version("context-surgeon")
+        __version__ = version("skill-optimizer")
 except Exception:
     __version__ = "0.1.0"
 
