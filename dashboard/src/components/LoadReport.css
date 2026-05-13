@@ -323,3 +323,77 @@
     padding: 10px;
   }
 }
+
+.github-url-box {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+}
+
+.github-url-header h4 {
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.github-url-row {
+  display: flex;
+  gap: 12px;
+}
+
+.github-url-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: white;
+  color: var(--text-primary);
+}
+
+.github-url-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.fetch-btn {
+  padding: 12px 24px;
+  white-space: nowrap;
+}
+
+.fetch-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.github-url-hint {
+  margin: 8px 0 0 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.skill-dropdown-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.skill-select {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: white;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.skill-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}

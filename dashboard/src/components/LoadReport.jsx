@@ -9,6 +9,11 @@ function LoadReport({ onFileLoad, error, savedReports = [], onOpenSavedReport, o
   const [skillName, setSkillName] = useState('SKILL.md')
   const [mode, setMode] = useState('balanced')
   const [replacementRoot, setReplacementRoot] = useState('')
+  const [githubUrl, setGithubUrl] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [detectedSkills, setDetectedSkills] = useState([])
+  const [selectedSkill, setSelectedSkill] = useState('')
 
   const handleReportSelect = (event) => {
     const file = event.target.files?.[0]
@@ -63,6 +68,231 @@ function LoadReport({ onFileLoad, error, savedReports = [], onOpenSavedReport, o
       return
     }
     onFileLoad(buildSkillTrimReport(skillText, skillName || 'SKILL.md', mode, replacementRoot))
+  }
+
+  const handleGithubUrl = async () => {
+    if (!githubUrl.trim()) {
+      alert('Enter a GitHub URL first.')
+      return
+    }
+
+    setLoading(true)
+    setErrorMsg('')
+
+    try {
+      let rawUrl = githubUrl.trim()
+      let skillName = 'skill'
+      let isRepoUrl = false
+
+      // Convert github.com URL to raw URL if needed
+      if (rawUrl.includes('github.com/') && !rawUrl.includes('raw.githubusercontent.com')) {
+        if (rawUrl.includes('/blob/')) {
+          // Direct file link - use as is
+          rawUrl = rawUrl.replace('github.com/', 'raw.githubusercontent.com/').replace('/blob/', '/')
+        } else if (rawUrl.includes('/tree/')) {
+          // It's a repo tree URL
+          const parts = rawUrl.split('github.com/')[1].split('/tree/')
+          if (parts.length >= 2) {
+            const [owner, repo, tree, branch = 'main'] = parts
+            rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/SKILL.md`
+            skillName = parts.slice(2).join('/') || repo
+            isRepoUrl = true
+          }
+        } else {
+          // Plain repo URL - try main branch
+          const match = rawUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/)
+          if (match) {
+            rawUrl = `https://raw.githubusercontent.com/${match[1]}/${match[2]}/main/SKILL.md`
+            skillName = match[2]
+            isRepoUrl = true
+          }
+        }
+      }
+
+      // For repo URLs, detect available skills in various folder structures
+      const folderNames = ['skills', 'agents', '.github', 'instructions', 'copilot-skills']
+      if (isRepoUrl) {
+        const match = rawUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/) || rawUrl.match(/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)/)
+        if (match) {
+          const owner = match[1]
+          const repo = match[2]
+
+          // Try each folder name
+          for (var f = 0; f < folderNames.length; f++) {
+            var folder = folderNames[f]
+            var contentsUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folder}`
+            try {
+              var resp = await fetch(contentsUrl)
+              if (resp.ok) {
+                var data = await resp.json()
+                var items = Array.isArray(data) ? data : []
+                var skills = []
+                for (var i = 0; i < items.length; i++) {
+                  var item = items[i]
+                  var name = item.name
+                  var type = item.type
+                  // For folders, check if they contain SKILL.md or AGENTS.md
+                  if (type === 'file' && (name === 'SKILL.md' || name === 'AGENTS.md' || name === 'CLAUDE.md')) {
+                    skills.push(folder)
+                    break
+                  } else if (type === 'dir' && name && name !== '.DS_Store' && name !== '.git') {
+                    skills.push(name)
+                  }
+                }
+                if (skills.length > 0) {
+                  setDetectedSkills(skills)
+                  setSelectedSkill('')
+                  setErrorMsg(`Found ${skills.length} items in /${folder}. Select one.`)
+                  setLoading(false)
+                  return
+                }
+              }
+            } catch (e) {
+              continue
+            }
+          }
+
+          // Also check for root level SKILL.md / AGENTS.md / CLAUDE.md
+          var rootFiles = ['SKILL.md', 'AGENTS.md', 'CLAUDE.md']
+          for (var r = 0; r < rootFiles.length; r++) {
+            var checkUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${rootFiles[r]}`
+            try {
+              var resp = await fetch(checkUrl)
+              if (resp.ok) {
+                setDetectedSkills([rootFiles[r]])
+                setSelectedSkill(rootFiles[r])
+                setErrorMsg(`Found ${rootFiles[r]} at root. Click Load.`)
+                setLoading(false)
+                return
+              }
+            } catch (e) {
+              continue
+            }
+          }
+        }
+      }
+
+      // Try multiple paths for direct files
+      const ownerRepo = rawUrl.match(/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)/)
+      var owner = ownerRepo ? ownerRepo[1] : ''
+      var repo = ownerRepo ? ownerRepo[2] : ''
+
+      var pathsToTry = isRepoUrl ? [
+        rawUrl.replace('/SKILL.md', '/skills/SKILL.md'),
+        rawUrl.replace('/SKILL.md', '/AGENTS.md'),
+        rawUrl.replace('/SKILL.md', '/CLAUDE.md'),
+        rawUrl.replace('/SKILL.md', '/agents/SKILL.md')
+      ] : [rawUrl]
+
+      let content = null
+      let usedPath = null
+
+      for (const url of pathsToTry) {
+        try {
+          const response = await fetch(url)
+          if (response.ok) {
+            content = await response.text()
+            usedPath = url
+            break
+          }
+        } catch (e) {
+          continue
+        }
+      }
+
+      if (!content) {
+        throw new Error('No SKILL.md found. Try a direct URL to a specific skill file.')
+      }
+
+      if (!content.trim()) {
+        throw new Error('Empty file - no content found.')
+      }
+
+      // Extract skill name from path
+      const urlParts = usedPath.split('/')
+      skillName = urlParts[urlParts.length - 3] || skillName
+      if (skillName === 'main') {
+        skillName = urlParts[urlParts.length - 2] || 'skill'
+      }
+
+      onFileLoad(buildSkillTrimReport(content, skillName, mode, replacementRoot))
+    } catch (err) {
+      const msg = err.message || 'Failed to fetch from GitHub'
+      setErrorMsg(msg)
+      alert(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSkillFromDropdown = async () => {
+    if (!selectedSkill || !githubUrl.trim()) {
+      alert('Select a skill first.')
+      return
+    }
+
+    setLoading(true)
+    setErrorMsg('')
+
+    try {
+      const match = githubUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/) || githubUrl.match(/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)/)
+      if (!match) {
+        throw new Error('Invalid repo URL')
+      }
+
+      var owner = match[1]
+      var repo = match[2]
+      var branch = 'main'
+      var rawUrl = ''
+
+      // Check if it's a root file (SKILL.md, AGENTS.md, CLAUDE.md)
+      if (selectedSkill === 'SKILL.md' || selectedSkill === 'AGENTS.md' || selectedSkill === 'CLAUDE.md') {
+        rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${selectedSkill}`
+      } else {
+        // Try skills folder with various file names
+        var fileNames = ['SKILL.md', 'AGENTS.md', 'CLAUDE.md']
+        for (var f = 0; f < fileNames.length; f++) {
+          var testUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/skills/${selectedSkill}/${fileNames[f]}`
+          var resp = await fetch(testUrl)
+          if (resp.ok) {
+            rawUrl = testUrl
+            break
+          }
+          // Try agents folder
+          testUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/agents/${selectedSkill}/${fileNames[f]}`
+          resp = await fetch(testUrl)
+          if (resp.ok) {
+            rawUrl = testUrl
+            break
+          }
+          // Try instructions folder
+          testUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/instructions/${selectedSkill}/${fileNames[f]}`
+          resp = await fetch(testUrl)
+          if (resp.ok) {
+            rawUrl = testUrl
+            break
+          }
+        }
+
+        // If still no url, try without subfolder
+        if (!rawUrl) {
+          rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${selectedSkill}/SKILL.md`
+        }
+      }
+
+      var response = await fetch(rawUrl)
+      if (!response.ok) {
+        throw new Error('Failed to fetch. Try a different selection.')
+      }
+
+      var content = await response.text()
+      onFileLoad(buildSkillTrimReport(content, selectedSkill, mode, replacementRoot))
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to fetch')
+      alert(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -123,6 +353,52 @@ function LoadReport({ onFileLoad, error, savedReports = [], onOpenSavedReport, o
           onChange={handleSkillSelect}
           style={{ display: 'none' }}
         />
+
+        <div className="github-url-box">
+          <div className="github-url-header">
+            <h4>Or enter a GitHub repo URL</h4>
+          </div>
+          <div className="github-url-row">
+            <input
+              className="github-url-input"
+              value={githubUrl}
+              onChange={(event) => { setGithubUrl(event.target.value); setDetectedSkills([]); }}
+              placeholder="https://github.com/user/repo"
+              onKeyDown={(e) => e.key === 'Enter' && handleGithubUrl()}
+            />
+            <button
+              className="load-btn fetch-btn"
+              onClick={handleGithubUrl}
+              disabled={loading}
+            >
+              {loading ? '...' : 'Fetch'}
+            </button>
+          </div>
+          {detectedSkills.length > 0 && (
+            <div className="skill-dropdown-row">
+              <select
+                className="skill-select"
+                value={selectedSkill}
+                onChange={(e) => setSelectedSkill(e.target.value)}
+              >
+                <option value="">Select a skill...</option>
+                {detectedSkills.map(function(s) {
+                  return <option key={s} value={s}>{s}</option>
+                })}
+              </select>
+              <button
+                className="load-btn fetch-btn"
+                onClick={handleSkillFromDropdown}
+                disabled={!selectedSkill || loading}
+              >
+                Load
+              </button>
+            </div>
+          )}
+          <p className="github-url-hint">
+            Enter a repo URL to list and load available skills from its /skills folder
+          </p>
+        </div>
 
         <div className="paste-skill-box">
           <div className="paste-skill-header">
