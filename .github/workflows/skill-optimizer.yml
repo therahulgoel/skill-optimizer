@@ -27,39 +27,39 @@ jobs:
           python-version: "3.11"
       - name: Install
         run: pip install --upgrade pip && pip install -e .
-      - name: Get mode
-        id: mode
-        run: |
-          MODE="${{ github.event.inputs.mode || 'balanced' }}"
-          echo "mode=$MODE" >> $GITHUB_OUTPUT
-      - name: Find SKILL.md files
+      - name: Find AGENTS.md files
         id: find
         run: |
-          SKILL_FILES=$(find . -name "SKILL.md" -type f ! -path "./.git/*" 2>/dev/null)
-          if [ -z "$SKILL_FILES" ]; then
-            echo "found=false" >> $GITHUB_OUTPUT
-          else
+          find . -name "AGENTS.md" -type f ! -path "./.git/*" > agents_files.txt
+          if [ -s agents_files.txt ]; then
             echo "found=true" >> $GITHUB_OUTPUT
-            echo "$SKILL_FILES" > skill_files.txt
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
           fi
-      - name: Run optimization
+      - name: Run ablation testing
         if: steps.find.outputs.found == 'true'
         run: |
-          MODE=${{ steps.mode.outputs.mode }}
+          MODE=${{ github.event.inputs.mode || 'balanced' }}
+          mkdir -p results
           while read file; do
-            skill-optimizer trim-skill --skill "$file" --output "./results" --mode "$MODE"
-          done < skill_files.txt
+            skill-optimizer run --agents "$file" --tasks ./tasks --output ./results --no-cache
+          done < agents_files.txt
+        continue-on-error: true
       - name: Copy report script
-        if: steps.find.outputs.found == 'true'
-        run: cp .github/gen_report.py ./gen_report.py
+        run: cp .github/gen_ablation_report.py ./gen_report.py
       - name: Generate report
-        if: steps.find.outputs.found == 'true'
-        run: python3 gen_report.py
+        run: |
+          if [ -d results ] && [ "$(ls -A results 2>/dev/null)" ]; then
+            python3 gen_report.py
+          else
+            echo "## 🤖 Skill Optimizer" > pr_comment.md
+            echo "" >> pr_comment.md
+            echo "No ablation results. Add AGENTS.md and ./tasks/ directory." >> pr_comment.md
+          fi
       - name: Upload results
-        if: steps.find.outputs.found == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: trimmed-skills
+          name: ablation-results
           path: results/
           retention-days: 30
       - name: Post PR comment
@@ -76,4 +76,4 @@ jobs:
             github.rest.issues.createComment({owner, repo, issue_number: pr, body});
       - name: No skills found
         if: steps.find.outputs.found != 'true'
-        run: echo "No skills found to optimize"
+        run: echo "No AGENTS.md found to optimize"
