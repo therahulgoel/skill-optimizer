@@ -6,18 +6,10 @@ on:
   pull_request:
     paths: [skills/**, .github/skills/**]
   workflow_dispatch:
-    inputs:
-      mode:
-        type: choice
-        description: Trim mode
-        options: [strict, balanced, aggressive]
-        default: balanced
-      use_api:
-        type: boolean
-        description: Use real API for testing (requires OPENAI_API_KEY secret)
-        default: false
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   optimize:
     runs-on: ubuntu-latest
@@ -26,61 +18,57 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Validate inputs
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          echo "=== Validating inputs ==="
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY secret is REQUIRED. Add it at: Settings → Secrets → Actions → OPENAI_API_KEY
+            Get your key at: https://platform.openai.com/api-keys"
+            exit 1
+          fi
+          if [ ! -f AGENTS.md ]; then
+            echo "::error::AGENTS.md not found. Create it with your skill rules."
+            exit 1
+          fi
+          if [ ! -d tasks ] || [ -z "$(ls -A tasks/)" ]; then
+            echo "::error::tasks/ directory is REQUIRED with test prompt files."
+            exit 1
+          fi
+          echo "✓ All validations passed"
+
       - name: Install
         run: pip install --upgrade pip && pip install -e .
-      - name: Find AGENTS.md files
-        id: find
+
+      - name: Run REAL ablation testing
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          find . -name "AGENTS.md" -type f ! -path "./.git/*" > agents_files.txt
-          if [ -s agents_files.txt ]; then
-            echo "found=true" >> $GITHUB_OUTPUT
-          else
-            echo "found=false" >> $GITHUB_OUTPUT
-          fi
-      - name: Run ablation with real API
-        if: steps.find.outputs.found == 'true'
-        run: |
+          echo "=== Running REAL ablation testing (with OpenAI API) ==="
           mkdir -p results
-          USE_API=${{ github.event.inputs.use_api }}
-          API_KEY=${{ secrets.OPENAI_API_KEY }}
-          if [ "$USE_API" = "true" ] && [ -n "$API_KEY" ]; then
-            echo "Using REAL API for ablation testing..."
-            while read file; do
-              skill-optimizer run \
-                --agents "$file" \
-                --tasks ./tasks \
-                --output ./results \
-                --api-key "$API_KEY" \
-                --use-api
-            done < agents_files.txt
-          else
-            echo "No API key - skipping ablation (add OPENAI_API_KEY to secrets)"
-          fi
-        continue-on-error: true
-      - name: Copy report script
-        run: cp .github/gen_ablation_report.py ./gen_report.py
-      - name: Generate report
-        run: |
-          if [ -d results ] && [ "$(ls -A results 2>/dev/null)" ]; then
-            python3 gen_report.py
-          else
-            echo "## 🤖 Skill Optimizer" > pr_comment.md
-            echo "" >> pr_comment.md
-            echo "No AGENTS.md found or no API key configured." >> pr_comment.md
-            echo "" >> pr_comment.md
-            echo "To enable real ablation testing:" >> pr_comment.md
-            echo "1. Add OPENAI_API_KEY to repository secrets" >> pr_comment.md
-            echo "2. Run workflow with 'Use real API for testing' = true" >> pr_comment.md
-          fi
+          skill-optimizer run \
+            --agents ./AGENTS.md \
+            --tasks ./tasks \
+            --output ./results \
+            --api-key "$OPENAI_API_KEY" \
+            --use-api
+
+      - name: Generate PR report
+        run: cp .github/gen_ablation_report.py ./gen_report.py && python3 gen_report.py
+
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
           name: ablation-results
           path: results/
           retention-days: 30
+
       - name: Post PR comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -91,8 +79,5 @@ jobs:
             const pr = context.payload.pull_request?.number || 1;
             let body = '';
             try { body = fs.readFileSync('pr_comment.md', 'utf8'); }
-            catch (e) { body = '## 🤖 Skill Optimizer\n\nNo skills found.'; }
+            catch (e) { body = '## 🤖 Skill Optimizer\n\nAblation test completed.'; }
             github.rest.issues.createComment({owner, repo, issue_number: pr, body});
-      - name: No skills found
-        if: steps.find.outputs.found != 'true'
-        run: echo "No AGENTS.md found to optimize"

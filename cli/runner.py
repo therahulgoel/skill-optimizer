@@ -52,9 +52,14 @@ class CodexAPI:
         if self.use_api and OPENAI_AVAILABLE:
             self.client = openai.OpenAI(api_key=api_key)
             print("🔑 Using real OpenAI API (gpt-4)")
+        elif not use_api and not api_key:
+            self.client = None
+            print("⚠️  WARNING: Using MOCK mode (no real inference)")
+            print("⚠️  Results are NOT validated - use --api-key for real testing")
         else:
             self.client = None
-            print("📦 Using mock API (deterministic responses)")
+            print("⚠️  WARNING: No API key - falling back to MOCK mode")
+            print("⚠️  Results are NOT validated - pass --api-key for real testing")
 
     def send_prompt(self, task_id: str, prompt: str, agents_md_content: str) -> TaskResult:
         """
