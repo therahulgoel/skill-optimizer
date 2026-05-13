@@ -1,0 +1,91 @@
+name: "Skill Optimizer"
+description: "Trim SKILL.md files to reduce token costs by 70-90%"
+author: "Rahul Goel (@therahulgoel)"
+branding:
+  icon: scissors
+  color: purple
+
+inputs:
+  mode:
+    description: "Trim mode: strict, balanced, or aggressive"
+    required: false
+    default: "balanced"
+  skills-dir:
+    description: "Directory containing SKILL.md files"
+    required: false
+    default: "skills"
+  output-dir:
+    description: "Output directory for results"
+    required: false
+    default: "results"
+
+outputs:
+  skills-count:
+    description: "Number of skills processed"
+  tokens-saved:
+    description: "Total tokens saved"
+  tokens-per-skill:
+    description: "Average tokens saved per skill"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install Skill Optimizer
+      run: pip install skill-optimizer
+      shell: bash
+
+    - name: Find SKILL.md files
+      id: find
+      run: |
+        FILES=$(find "${{ inputs.skills-dir }}" -name "SKILL.md" -type f 2>/dev/null || true)
+        if [ -z "$FILES" ]; then
+          echo "found=false" >> $GITHUB_OUTPUT
+        else
+          echo "found=true" >> $GITHUB_OUTPUT
+          echo "$FILES" > skill-files.txt
+        fi
+
+    - name: Run optimization
+      if: steps.find.outputs.found == 'true'
+      run: |
+        MODE="${{ inputs.mode }}"
+        OUTPUT="${{ inputs.output-dir }}"
+        cat skill-files.txt | while read file; do
+          echo "Optimizing $file..."
+          skill-optimizer trim-skill --skill "$file" --output "$OUTPUT" --mode "$MODE"
+        done
+      shell: bash
+
+    - name: Generate summary
+      if: steps.find.outputs.found == 'true'
+      id: summary
+      run: |
+        TOTAL=0
+        SAVED=0
+        for report in $(find "${{ inputs.output-dir }}" -name "skill_trim_report.json" 2>/dev/null); do
+          if [ -f "$report" ]; then
+            TOTAL=$((TOTAL + $(python3 -c "import json; print(json.load(open('$report')).get('skill',{}).get('original_rule_count',0))" 2>/dev/null || echo "0")))
+            SAVED=$((SAVED + $(python3 -c "import json; print(json.load(open('$report')).get('skill',{}).get('actual_tokens_saved',0))" 2>/dev/null || echo "0")))
+          fi
+        done
+        AVG=0
+        if [ $TOTAL -gt 0 ]; then
+          AVG=$((SAVED / TOTAL))
+        fi
+        echo "skills-count=$TOTAL" >> $GITHUB_OUTPUT
+        echo "tokens-saved=$SAVED" >> $GITHUB_OUTPUT
+        echo "tokens-per-skill=$AVG" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Upload artifacts
+      if: steps.find.outputs.found == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: trimmed-skills
+        path: ${{ inputs.output-dir }}
+        retention-days: 30
