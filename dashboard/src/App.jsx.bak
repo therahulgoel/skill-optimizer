@@ -1,7 +1,0 @@
-import './App.css'
-
-function App() {
-  return <div className="app-placeholder">Dashboard loading...</div>
-}
-
-export default App

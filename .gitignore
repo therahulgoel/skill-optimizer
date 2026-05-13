@@ -17,6 +17,10 @@ htmlcov/
 
 # ContextSurgeon cache
 .context-surgeon/
+.skill-optimizer/
+
+# Results output
+results/
 
 # Environment
 .env
