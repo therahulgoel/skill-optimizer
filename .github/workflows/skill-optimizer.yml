@@ -12,6 +12,10 @@ on:
         description: Trim mode
         options: [strict, balanced, aggressive]
         default: balanced
+      use_api:
+        type: boolean
+        description: Use real API for testing (requires OPENAI_API_KEY secret)
+        default: false
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
@@ -36,14 +40,25 @@ jobs:
           else
             echo "found=false" >> $GITHUB_OUTPUT
           fi
-      - name: Run ablation testing
+      - name: Run ablation with real API
         if: steps.find.outputs.found == 'true'
         run: |
-          MODE=${{ github.event.inputs.mode || 'balanced' }}
           mkdir -p results
-          while read file; do
-            skill-optimizer run --agents "$file" --tasks ./tasks --output ./results --no-cache
-          done < agents_files.txt
+          USE_API=${{ github.event.inputs.use_api }}
+          API_KEY=${{ secrets.OPENAI_API_KEY }}
+          if [ "$USE_API" = "true" ] && [ -n "$API_KEY" ]; then
+            echo "Using REAL API for ablation testing..."
+            while read file; do
+              skill-optimizer run \
+                --agents "$file" \
+                --tasks ./tasks \
+                --output ./results \
+                --api-key "$API_KEY" \
+                --use-api
+            done < agents_files.txt
+          else
+            echo "No API key - skipping ablation (add OPENAI_API_KEY to secrets)"
+          fi
         continue-on-error: true
       - name: Copy report script
         run: cp .github/gen_ablation_report.py ./gen_report.py
@@ -54,7 +69,11 @@ jobs:
           else
             echo "## 🤖 Skill Optimizer" > pr_comment.md
             echo "" >> pr_comment.md
-            echo "No ablation results. Add AGENTS.md and ./tasks/ directory." >> pr_comment.md
+            echo "No AGENTS.md found or no API key configured." >> pr_comment.md
+            echo "" >> pr_comment.md
+            echo "To enable real ablation testing:" >> pr_comment.md
+            echo "1. Add OPENAI_API_KEY to repository secrets" >> pr_comment.md
+            echo "2. Run workflow with 'Use real API for testing' = true" >> pr_comment.md
           fi
       - name: Upload results
         uses: actions/upload-artifact@v4
