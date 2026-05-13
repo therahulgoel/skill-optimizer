@@ -15,13 +15,13 @@ Skill Optimizer removes the fluff, keeps the logic.
 ## Results (Tested on 40 Skills)
 
 | Repo | Original | Trimmed | Saved | Reduction |
-|------|---------|--------|-------|-------|----------|
+|------|----------|---------|-------|----------|
 | ASO Skills | 2,486 | 298 | 2,188 | **88%** |
 | app-launch | 958 | 58 | 900 | **94%** |
 | competitor-analysis | 512 | 89 | 423 | **83%** |
 | android-aso | 421 | 114 | 307 | **73%** |
 
-> That's ~2,200 tokens saved per repo. Every interaction is cheaper. Every context window has room for more useful stuff.
+> That's ~2,200 tokens saved per repo. Every interaction is cheaper.
 
 ## Quick Start
 
