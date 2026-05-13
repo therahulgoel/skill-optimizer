@@ -111,6 +111,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const prNumber = context.payload.pull_request?.number || context.issue?.number;
             const skills = '${{ steps.summary.outputs.skills }}';
             const tokens = '${{ steps.summary.outputs.tokens }}';
             const avg = '${{ steps.summary.outputs.avg }}';
@@ -123,10 +124,12 @@ jobs:
               '| Avg per skill | ' + avg + ' |\n\n' +
               '📦 Artifacts contain trimmed SKILL.md files.';
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              body: body
-            });
+            if (prNumber) {
+              github.rest.issues.createComment({
+                issue_number: prNumber,
+                body: body
+              });
+            }
 
       - name: No skills found
         if: steps.find.outputs.found != 'true'
