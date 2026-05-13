@@ -114,7 +114,8 @@ jobs:
             const skills = '${{ steps.summary.outputs.skills }}';
             const tokens = '${{ steps.summary.outputs.tokens }}';
             const avg = '${{ steps.summary.outputs.avg }}';
-            const pr = context.payload.pull_request;
+            const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+            const prNumber = context.payload.pull_request?.number || 1;
 
             const body = '## 🤖 Skill Optimizer\n\n' +
               '| Metric | Value |\n' +
@@ -124,12 +125,14 @@ jobs:
               '| Avg per skill | ' + avg + ' |\n\n' +
               '📦 Artifacts contain trimmed SKILL.md files.';
 
-            if (pr && pr.number) {
-              github.rest.issues.createComment({
-                issue_number: pr.number,
-                body: body
-              });
-            }
+            console.log('Posting comment to', owner, repo, 'PR #'+prNumber);
+
+            github.rest.issues.createComment({
+              owner: owner,
+              repo: repo,
+              issue_number: prNumber,
+              body: body
+            });
 
       - name: No skills found
         if: steps.find.outputs.found != 'true'
