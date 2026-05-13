@@ -1,81 +1,151 @@
 # Skill Optimizer
 
-Trim and minimize `SKILL.md` and `AGENTS.md` files — reduce token costs and simplify agent skills.
+Trim and minimize `SKILL.md` and `AGENTS.md` files — reduce token costs while keeping rules that actually change behavior.
 
-![Dashboard preview](docs/images/dashboard-screenshot.png)
+![Dashboard](docs/images/dashboard-screenshot.png)
 
-Why use Skill Optimizer?
-- Save tokens: smaller skills reduce prompt size and model cost.
-- Safer edits: reviewable keep/remove decisions with reasons.
-- Team-ready: batch mode, replacement helpers, and consistent modes.
+## What it does
 
-Quick start
+Skill Optimizer analyzes your AI agent skill files and removes:
+- Examples and sample output (reduce context, not behavior)
+- Duplicate reference bullets
+- Tutorial text and process steps
+- Low-signal editorial content
 
-CLI (fast)
+Keeps:
+- Actionable directives ("ensure X", "must Y")
+- Platform/framework constraints
+- Output formatting rules for team consistency
+- Unique reference files
 
-User-level install (recommended)
+**Result**: ~70-90% token reduction while preserving functional rules.
 
-Install for the current user (adds the `skill-optimizer` console script to your user `bin`):
+## Quick Start
+
+### One-line demo (clone any repo)
 
 ```bash
-# Using `python3` (recommended)
-python3 -m pip install --upgrade pip setuptools wheel
+# Clone a repo and trim all skills
+python3 -m cli.main trim-skill --clone user/repo
+
+# Example: trim ASO skills
+python3 -m cli.main trim-skill --clone Eronred/aso-skills
+```
+
+That's it! It will:
+1. Clone the repo
+2. Trim all SKILL.md files
+3. Save token reduction report
+4. Open dashboard to visualize results
+
+## Installation
+
+```bash
+# Recommended: user install
 python3 -m pip install --user .
 
-# Ensure the user `bin` directory is on your PATH (works on macOS and Linux):
-echo 'export PATH="$(python3 -m site --user-base)/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-```
-
-Or using `pip`/`pip3`:
-
-```bash
-pip install --user .        # or `pip3 install --user .`
-```
-
-Optional: install with `pipx` for isolated, per-user CLI installs:
-
-```bash
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath   # reopen your shell if needed
-pipx install .
-```
-
-Editable / development install (from repo root)
-
-```bash
-python3 -m pip install --upgrade pip setuptools wheel
+# Or development install
 python3 -m pip install -e .
 ```
 
-Run the CLI:
+## Usage
 
+### 1. Clone and trim a repo
 ```bash
-skill-optimizer trim-skill --skill /path/to/SKILL.md --output results/ --mode balanced
+skill-optimizer trim-skill --clone user/repo
+skill-optimizer trim-skill --clone user/repo --branch develop  # custom branch
+skill-optimizer trim-skill --clone user/repo --no-open  # skip dashboard
 ```
 
-Run without installing (useful for development):
-
+### 2. From GitHub URL
 ```bash
-python3 -m cli.main trim-skill --skill /path/to/SKILL.md --output results/ --mode balanced
+# Single skill from raw URL
+skill-optimizer trim-skill --url https://raw.githubusercontent.com/user/repo/main/SKILL.md
+
+# From github.com link
+skill-optimizer trim-skill --url https://github.com/user/repo/blob/main/skills/my-skill/SKILL.md
 ```
 
-Dashboard (visual):
+### 3. From local file
 ```bash
-# optional: copy a sample report for quick preview
-cp results/skill_trim_report.json dashboard/public/skill_trim_report.json
+# Single file
+skill-optimizer trim-skill --skill ./skills/my-skill/SKILL.md
+
+# Entire folder
+skill-optimizer trim-folder --skills-dir ./skills --output results/
+```
+
+### Trim modes
+
+| Mode | What it keeps | Use case |
+|------|--------------|---------|
+| `strict` | More rules | When unsure, want safety |
+| `balanced` | Core rules (default) | Recommended |
+| `aggressive` | Only constraints | Maximum token savings |
+
+## Output
+
+```
+results/
+├── skill_trim_batch_report.json    # Detailed report
+├── skill_1.optimized.md        # Trimmed skill
+├── skill_2.optimized.md
+└── ...
+```
+
+### Report includes:
+- Original vs kept rule counts
+- Token savings per skill
+- Reason each rule was kept/removed
+- Suggested replacement path
+
+## Dashboard
+
+Visual interface to explore results:
+
+```bash
 cd dashboard
 npm install
 npm run dev
-# open http://localhost:3000
+# Open http://localhost:3000
 ```
 
-Notes
-- Modes: `strict`, `balanced` (default), `aggressive`.
-- Batch: `trim-folder --skills-dir path --output results/ --mode balanced`.
-- See [QUICK_REFERENCE.md](QUICK_REFERENCE.md) for examples and advanced usage.
+Features:
+- Drag & drop reports
+- Compare original vs optimized
+- Export trimmed skills
+- Token savings breakdown
 
-License: MIT — see [LICENSE](LICENSE)
+## Examples
+
+### Trim a single skill
+```bash
+python3 -m cli.main trim-skill \
+  --url https://raw.githubusercontent.com/Eronred/aso-skills/main/skills/app-launch/SKILL.md \
+  --output results/
+```
+
+### Trim your own skills folder
+```bash
+python3 -m cli.main trim-folder \
+  --skills-dir ./my-agent-skills \
+  --output results/ \
+  --mode aggressive
+```
+
+## How it works
+
+1. **Parse**: Extract rules from SKILL.md
+2. **Classify**: Categorize each rule (directive, constraint, reference, example)
+3. **Trim**: Keep only high-signal rules based on mode
+4. **Report**: Generate JSON with keep/remove reasons
+
+The trimmer uses heuristics — review the report to override decisions before deploying.
+
+## License
+
+MIT — See [LICENSE](LICENSE)
+
+---
 
 Made with ❤️ by [@therahulgoel](https://github.com/therahulgoel)
-

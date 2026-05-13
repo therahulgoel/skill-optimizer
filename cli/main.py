@@ -2,10 +2,68 @@
 
 import click
 import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
 import time
+import urllib.request
 from pathlib import Path
 
 from .rule_parser import RuleParser
+
+
+def echo_progress(message: str):
+    """Print a progress message."""
+    click.echo(f"  🔄 {message}")
+
+
+def echo_success(message: str):
+    """Print a success message."""
+    click.echo(f"  ✅ {message}")
+
+
+def echo_step(num: int, total: int, message: str):
+    """Print a step progress message."""
+    click.echo(f"[{num}/{total}] {message}")
+
+
+def download_github_skill(url: str) -> Path:
+    """Download a SKILL.md or AGENTS.md from GitHub URL.
+
+    Supports:
+    - https://raw.githubusercontent.com/user/repo/main/path/SKILL.md
+    - https://github.com/user/repo/blob/main/path/SKILL.md
+    - https://github.com/user/repo/tree/main/path (repo URL - will look for SKILL.md)
+    """
+    # Convert github.com URLs to raw.githubusercontent.com
+    if "github.com/" in url and "/blob/" in url:
+        url = url.replace("github.com/", "raw.githubusercontent.com/").replace("/blob/", "/")
+    elif "github.com/" in url and "/tree/" in url:
+        # It's a repo URL, try to get SKILL.md from main branch
+        user_repo = url.split("github.com/")[-1]
+        parts = user_repo.split("/tree/")[0].split("/")
+        if len(parts) >= 2:
+            repo_path = "/".join(parts[:2])
+            url = f"https://raw.githubusercontent.com/{repo_path}/main/SKILL.md"
+
+    # Download to temp file
+    with urllib.request.urlopen(url) as response:
+        content = response.read().decode('utf-8')
+
+    # Determine filename from URL
+    match = re.search(r'([^/]+)\.md', url)
+    filename = match.group(1) if match else "skill"
+
+    # Write to temp file
+    temp_dir = Path(tempfile.gettempdir()) / "skill-optimizer"
+    temp_dir.mkdir(exist_ok=True)
+    file_path = temp_dir / f"{filename}.md"
+    file_path.write_text(content, encoding='utf-8')
+
+    return file_path
 from .runner import TaskHarness
 from .ablation import AblationEngine
 from .output import OutputGenerator
@@ -260,43 +318,164 @@ def trends(trends_dir, compare, json):
 @cli.command('trim-skill')
 @click.option(
     '--skill',
+    'skill_path',
     type=click.Path(exists=True),
-    required=True,
-    help='Path to SKILL.md file'
+    default=None,
+    help='Path to SKILL.md file (or use --url for GitHub)'
+)
+@click.option(
+    '--url',
+    default=None,
+    help='GitHub URL to SKILL.md: raw.githubusercontent.com or github.com/blob link'
+)
+@click.option(
+    '--clone',
+    default=None,
+    help='Clone a full repo and trim all SKILL.md files (e.g., user/repo or full URL)'
+)
+@click.option(
+    '--branch',
+    default='main',
+    help='Branch to use when cloning (default: main)'
+)
+@click.option(
+    '--open/--no-open',
+    default=True,
+    help='Open dashboard after trimming (default: true)'
 )
 @click.option(
     '--output',
     type=click.Path(),
     default='results',
-    help='Output directory for optimized skill and report'
+    help='Output directory for report'
 )
 @click.option(
     '--mode',
     type=click.Choice(['strict', 'balanced', 'aggressive']),
     default='balanced',
     show_default=True,
-    help='Trim mode'
+    help='Trim mode: strict (keep more), balanced (recommended), aggressive'
 )
 @click.option(
     '--replacement-root',
     type=click.Path(),
     default=None,
-    help='Optional root folder used to suggest where the optimized skill should replace an existing skill'
+    help='Suggest replacement path for the optimized skill'
 )
 def trim_skill(
-    skill, output, mode, replacement_root):
-    """Trim an open-source SKILL.md file to a practical minimum.
+    skill_path, output, mode, replacement_root, url, clone, branch, open):
+    """Trim SKILL.md files to minimum useful rules.
 
-    Generates two artifacts:
-    1. <name>.optimized.md
-    2. skill_trim_report.json
+    Quick start:
+        skill-optimizer trim-skill --skill ./my-skill/SKILL.md
+        skill-optimizer trim-skill --url https://raw.githubusercontent.com/user/repo/main/SKILL.md
+        skill-optimizer trim-skill --clone Eronred/aso-skills
+
+    This removes examples, tutorials, and duplicate guidance to reduce
+    token cost while keeping actionable rules that change behavior.
     """
+    # Handle clone option (full repo)
+    if clone:
+        echo_progress(f"Cloning repo {clone}...")
+
+        # Clean up previous temp clone
+        temp_clone = Path(tempfile.gettempdir()) / "skill-optimizer-clone"
+        if temp_clone.exists():
+            shutil.rmtree(temp_clone)
+
+        # Use provided branch or parse from URL
+        branch = branch  # Use the --branch option
+        if "?ref=" in clone:
+            branch = clone.split("?ref=")[-1]
+            clone = clone.split("?ref=")[0]
+
+        # Clone the repo
+        if clone.startswith("http"):
+            repo_url = clone
+        else:
+            repo_url = f"https://github.com/{clone}"
+
+        with click.progressbar(length=100, label='Cloning') as bar:
+            result = subprocess.run(
+                ["git", "clone", "--depth", "1", "-b", branch, repo_url, str(temp_clone)],
+                capture_output=True, text=True
+            )
+            bar.update(100)
+
+        if result.returncode != 0:
+            click.echo(f"Error cloning repo: {result.stderr}")
+            return
+
+        # Find SKILL.md files
+        skills_dir = temp_clone / "skills"
+        if not skills_dir.exists():
+            click.echo("No skills/ folder found. Looking for root SKILL.md...")
+            skills_dir = temp_clone
+
+        # Count skills first
+        skill_files = list(skills_dir.rglob("SKILL.md")) if skills_dir.exists() else []
+        total_skills = len(skill_files)
+
+        echo_progress(f"Found {total_skills} skills to trim...")
+
+        # Run batch trim with progress
+        with click.progressbar(length=total_skills, label='Trimming skills') as bar:
+            batch_report = trim_skill_folder(str(skills_dir), output, mode=mode, replacement_root=replacement_root)
+            bar.update(total_skills)
+
+        click.echo("\n" + "=" * 60)
+        echo_success(f"Trimmed {batch_report['summary']['total_skills']} skills")
+        click.echo(f"  Tokens saved: {batch_report['summary']['total_tokens_saved']}")
+
+        report_path = Path(output) / 'skill_trim_batch_report.json'
+        click.echo(f"  Report: {report_path}")
+
+        # Auto-open dashboard option
+        if open:
+            dashboard_path = Path(__file__).parent.parent / "dashboard"
+            if dashboard_path.exists():
+                echo_progress("Starting dashboard...")
+                subprocess.Popen(
+                    ["npm", "run", "dev"],
+                    cwd=str(dashboard_path),
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+                # Wait for server to start
+                time.sleep(3)
+                # Open browser
+                url = "http://localhost:3000"
+                try:
+                    if sys.platform == "darwin":
+                        subprocess.run(["open", url], check=True)
+                    elif sys.platform == "win32":
+                        subprocess.run(["start", url], shell=True, check=True)
+                    else:
+                        subprocess.run(["xdg-open", url], check=True)
+                except Exception:
+                    click.echo(f"  Open {url} manually to view dashboard")
+
+        click.echo(f"\n✨ Done! View results in {output}/")
+        return
+
+    # Handle URL input
+    if url:
+        click.echo(f"📥 Downloading from GitHub...")
+        skill_path = download_github_skill(url)
+        click.echo(f"  Downloaded to: {skill_path}")
+    elif skill_path:
+        skill_path = Path(skill_path)
+    else:
+        click.echo("Error: Provide either --skill <path> or --url <github-url>")
+        click.echo("Run: skill-optimizer trim-skill --help")
+        return
+
     output_path = Path(output)
-    report = trim_skill_file(skill, output, mode=mode, replacement_root=replacement_root)
+    report = trim_skill_file(str(skill_path), output, mode=mode, replacement_root=replacement_root)
 
     click.echo("\n✂️ Skill Trim Complete")
     click.echo("=" * 60)
-    click.echo(f"Source: {skill}")
+    click.echo(f"Source: {skill_path}")
     click.echo(f"Mode: {mode}")
     click.echo(f"Original rules: {report['skill']['original_rule_count']}")
     click.echo(f"Kept rules: {report['skill']['kept_rule_count']}")
