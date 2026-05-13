@@ -80,6 +80,16 @@ jobs:
         if: steps.find.outputs.found == 'true'
         id: summary
         run: |
+          # Generate detailed markdown report
+          {
+            echo "## 🤖 Skill Optimizer Report"
+            echo ""
+            echo "### Summary"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|--------|-------|"
+          } > pr_comment.md
+
           TOTAL_SKILLS=0
           TOTAL_TOKENS=0
           for report in $(find results -name "skill_trim_report.json" 2>/dev/null); do
@@ -94,6 +104,41 @@ jobs:
           if [ $TOTAL_SKILLS -gt 0 ]; then
             AVG=$((TOTAL_TOKENS / TOTAL_SKILLS))
           fi
+
+          echo "| Skills | $TOTAL_SKILLS |" >> pr_comment.md
+          echo "| Tokens saved | $TOTAL_TOKENS |" >> pr_comment.md
+          echo "| Avg per skill | $AVG |" >> pr_comment.md
+
+          echo "" >> pr_comment.md
+          echo "### Per-Skill Breakdown" >> pr_comment.md
+          echo "" >> pr_comment.md
+          echo "| Skill | Original | Trimmed | Saved | Reduction |" >> pr_comment.md
+          echo "|-------|----------|--------|------|----------|" >> pr_comment.md
+
+          for report in $(find results -name "skill_trim_report.json" 2>/dev/null); do
+            if [ -f "$report" ]; then
+              NAME=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('name','unknown'))" 2>/dev/null)
+              ORIG=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('original_rule_count',0))" 2>/dev/null)
+              KEPT=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('kept_rule_count',0))" 2>/dev/null)
+              SAVED=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('actual_tokens_saved',0))" 2>/dev/null)
+              PCT=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('token_reduction_pct',0))" 2>/dev/null)
+              echo "| $NAME | $ORIG | $KEPT | $SAVED | **$PCT%** |" >> pr_comment.md
+            fi
+          done
+
+          echo "" >> pr_comment.md
+          echo "### Files Changed" >> pr_comment.md
+          echo "" >> pr_comment.md
+          for opt in $(find results -name "*.optimized.md" 2>/dev/null); do
+            NAME=$(basename "$opt" .optimized.md)
+            echo "- \`$opt\` - Optimized skill" >> pr_comment.md
+          done
+
+          echo "" >> pr_comment.md
+          echo "---" >> pr_comment.md
+          echo "*Processed by [Skill Optimizer](https://github.com/therahulgoel/skill-optimizer) by [@therahulgoel](https://github.com/therahulgoel)*" >> pr_comment.md
+
+          cat pr_comment.md
           echo "skills=$TOTAL_SKILLS" >> $GITHUB_OUTPUT
           echo "tokens=$TOTAL_TOKENS" >> $GITHUB_OUTPUT
           echo "avg=$AVG" >> $GITHUB_OUTPUT
@@ -111,19 +156,16 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const skills = '${{ steps.summary.outputs.skills }}';
-            const tokens = '${{ steps.summary.outputs.tokens }}';
-            const avg = '${{ steps.summary.outputs.avg }}';
+            const fs = require('fs');
             const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
             const prNumber = context.payload.pull_request?.number || 1;
 
-            const body = '## 🤖 Skill Optimizer\n\n' +
-              '| Metric | Value |\n' +
-              '|--------|-------|\n' +
-              '| Skills | ' + skills + ' |\n' +
-              '| Tokens saved | ' + tokens + ' |\n' +
-              '| Avg per skill | ' + avg + ' |\n\n' +
-              '📦 Artifacts contain trimmed SKILL.md files.';
+            let body = '';
+            try {
+              body = fs.readFileSync('pr_comment.md', 'utf8');
+            } catch (e) {
+              body = '## 🤖 Skill Optimizer\n\nNo skills found to optimize.';
+            }
 
             console.log('Posting comment to', owner, repo, 'PR #'+prNumber);
 
