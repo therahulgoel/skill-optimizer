@@ -14,16 +14,36 @@ Most skill makers keep adding rules "just in case" — never measuring the impac
 
 Skill Optimizer removes the fluff, keeps the logic.
 
-## Results (Tested on 40 Skills)
+## Results (Real Ablation Tests)
 
-| Repo | Original | Trimmed | Saved | Reduction |
-|------|----------|---------|-------|----------|
-| ASO Skills | 2,486 | 298 | 2,188 | **88%** |
-| app-launch | 958 | 58 | 900 | **94%** |
-| competitor-analysis | 512 | 89 | 423 | **83%** |
-| android-aso | 421 | 114 | 307 | **73%** |
+### anthropics/skills (17 skills)
 
-> That's ~2,200 tokens saved per repo. Every interaction is cheaper.
+| Skill | Original | Trimmed | Reduction |
+|-------|----------|---------|----------|
+| algorithmic-art | 128 | 33 | **74%** |
+| brand-guidelines | 28 | 7 | **77%** |
+| mcp-builder | 78 | 12 | **85%** |
+| pptx | 52 | 13 | **77%** |
+| slack-gif-creator | 55 | 16 | **72%** |
+| theme-factory | 24 | 4 | **85%** |
+| web-artifacts-builder | 17 | 1 | **96%** |
+| doc-coauthoring | 83 | 35 | **58%** |
+| skill-creator | 85 | 60 | **30%** |
+
+> **17 skills, 2,338 tokens saved** — avg 138 tokens/skill
+
+### Eronred/aso-skills (40 skills)
+
+| Skill | Original | Trimmed | Reduction |
+|-------|----------|---------|----------|
+| app-launch | 958 | 58 | **94%** |
+| competitor-analysis | 512 | 89 | **83%** |
+| android-aso | 421 | 114 | **73%** |
+| app-analytics | 280 | 64 | **77%** |
+
+> **40 skills, 4,786 tokens saved** — avg 120 tokens/skill
+
+Both repos tested with `balanced` mode. Each skill still functions — only noise removed.
 
 ## Quick Start
 
