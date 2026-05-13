@@ -1,0 +1,128 @@
+name: Skill Optimizer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.github/skills/**'
+  pull_request:
+    paths:
+      - 'skills/**'
+      - '.github/skills/**'
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: Trim mode
+        options:
+          - strict
+          - balanced
+          - aggressive
+        default: balanced
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Skill Optimizer
+        run: pip install skill-optimizer
+
+      - name: Get trim mode
+        id: mode
+        run: |
+          MODE="${{ github.event.inputs.mode || 'balanced' }}"
+          echo "mode=$MODE" >> $GITHUB_OUTPUT
+          echo "Finding skills directories..."
+
+      - name: Find SKILL.md files
+        id: find
+        run: |
+          SKILL_FILES=$(find . -name "SKILL.md" -type f ! -path "./.git/*" 2>/dev/null)
+          if [ -z "$SKILL_FILES" ]; then
+            echo "No SKILL.md files found"
+            echo "found=false" >> $GITHUB_OUTPUT
+          else
+            echo "found=true" >> $GITHUB_OUTPUT
+            echo "$SKILL_FILES" > skill_files.txt
+            echo "files=$(cat skill_files.txt)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run optimization
+        if: steps.find.outputs.found == 'true'
+        run: |
+          MODE=${{ steps.mode.outputs.mode }}
+          cat skill_files.txt | while read file; do
+            echo "Trimming $file..."
+            skill-optimizer trim-skill \
+              --skill "$file" \
+              --output "./results" \
+              --mode "$MODE"
+          done
+
+      - name: Generate summary
+        if: steps.find.outputs.found == 'true'
+        id: summary
+        run: |
+          TOTAL_SKILLS=0
+          TOTAL_TOKENS=0
+          for report in $(find results -name "skill_trim_report.json" 2>/dev/null); do
+            if [ -f "$report" ]; then
+              SKILLS=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('original_rule_count',1))" 2>/dev/null)
+              TOKENS=$(python3 -c "import json; d=json.load(open('$report')); print(d.get('skill',{}).get('actual_tokens_saved',0))" 2>/dev/null)
+              TOTAL_SKILLS=$((TOTAL_SKILLS + ${SKILLS:-0}))
+              TOTAL_TOKENS=$((TOTAL_TOKENS + ${TOKENS:-0}))
+            fi
+          done
+          AVG=0
+          if [ $TOTAL_SKILLS -gt 0 ]; then
+            AVG=$((TOTAL_TOKENS / TOTAL_SKILLS))
+          fi
+          echo "skills=$TOTAL_SKILLS" >> $GITHUB_OUTPUT
+          echo "tokens=$TOTAL_TOKENS" >> $GITHUB_OUTPUT
+          echo "avg=$AVG" >> $GITHUB_OUTPUT
+
+      - name: Upload results
+        if: steps.find.outputs.found == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: trimmed-skills
+          path: results/
+          retention-days: 30
+
+      - name: Post PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const skills = '${{ steps.summary.outputs.skills }}';
+            const tokens = '${{ steps.summary.outputs.tokens }}';
+            const avg = '${{ steps.summary.outputs.avg }}';
+
+            const body = '## 🤖 Skill Optimizer\n\n' +
+              '| Metric | Value |\n' +
+              '|--------|-------|\n' +
+              '| Skills | ' + skills + ' |\n' +
+              '| Tokens saved | ' + tokens + ' |\n' +
+              '| Avg per skill | ' + avg + ' |\n\n' +
+              '📦 Artifacts contain trimmed SKILL.md files.';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              body: body
+            });
+
+      - name: No skills found
+        if: steps.find.outputs.found != 'true'
+        run: echo "No skills directories found to optimize"
