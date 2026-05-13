@@ -149,9 +149,11 @@ jobs:
                   lines.append("")
                   kept_rules = d.get('kept_rules', [])[:8]
                   for r in kept_rules:
-                      rule_name = r.get('name', 'unnamed')
-                      verdict = r.get('verdict', '')
-                      lines.append(f"- {rule_name} ({verdict})")
+                      text = r.get('text', 'unnamed')[:50]
+                      reason = r.get('reason', '')[:40]
+                      lines.append(f"- {text}")
+                      if reason:
+                          lines.append(f"  - Keep: {reason}")
                   lines.append("")
               except:
                   pass
@@ -168,8 +170,11 @@ jobs:
                   lines.append("")
                   removed_rules = d.get('removed_rules', [])[:8]
                   for r in removed_rules:
-                      rule_name = r.get('name', 'unnamed')
-                      lines.append(f"- {rule_name}")
+                      text = r.get('text', 'unnamed')[:50]
+                      reason = r.get('reason', '')[:40]
+                      lines.append(f"- {text}")
+                      if reason:
+                          lines.append(f"  - Remove: {reason}")
                   lines.append("")
               except:
                   pass
