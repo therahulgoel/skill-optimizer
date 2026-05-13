@@ -37,7 +37,9 @@ jobs:
           python-version: "3.11"
 
       - name: Install Skill Optimizer
-        run: pip install skill-optimizer
+        run: |
+          pip install --upgrade pip
+          pip install -e .
 
       - name: Get trim mode
         id: mode
