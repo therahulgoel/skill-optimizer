@@ -1,6 +1,8 @@
 # Skill Optimizer
 
-Trim AI agent skill files — reduce tokens by 70-90% without losing what actually works.
+Ablation-tested SKILL.md optimization — slash token costs by 70-90% while keeping what actually works.
+
+> **Problem**: Unchecked skills = more tokens = higher costs + worse outputs. **Solution**: Ablate ruthlessly, measure impact.
 
 ![Dashboard](docs/images/dashboard-screenshot.png)
 
@@ -66,11 +68,14 @@ skill-optimizer trim-skill --skill ./my-skill/SKILL.md
 | `balanced` | ~80% | Recommended |
 | `strict` | ~60% | Keep most rules |
 
-## How It Works
+## How It Works (Ablation Testing)
 
 1. **Classify** each rule as: directive, constraint, reference, example, or duplicate
 2. **Remove** low-signal content (examples, tutorials, dupes)
 3. **Keep** what changes behavior (must, ensure, limits)
+4. **Verify** with task-specific prompt patterns
+
+Inspired by [Anthropic's ablation research](https://www.anthropic.com/engineering/ablation) — test what actually matters.
 
 The report shows exactly why each rule was kept or removed — you're in control.
 
